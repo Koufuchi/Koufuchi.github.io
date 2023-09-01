@@ -44,9 +44,9 @@
     
     <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="MySQL" scheme="https://koufuchi.github.io/tags/MySQL/"/>
-    
     <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
+    
+    <category term="MySQL" scheme="https://koufuchi.github.io/tags/MySQL/"/>
     
   </entry>
   
@@ -75,13 +75,13 @@
     
     <category term="Cache" scheme="https://koufuchi.github.io/tags/Cache/"/>
     
-    <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
-    
-    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
-    
     <category term="計算機組織" scheme="https://koufuchi.github.io/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/"/>
     
+    <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
+    
     <category term="Message queue" scheme="https://koufuchi.github.io/tags/Message-queue/"/>
+    
+    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
     
   </entry>
   
@@ -109,11 +109,11 @@
     
     <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
-    
     <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
+    
+    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
     
@@ -145,11 +145,11 @@
     
     <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
-    
     <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
+    
+    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
     
@@ -181,11 +181,11 @@
     
     <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
-    
     <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
+    
+    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
     
@@ -218,11 +218,11 @@
     
     <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
-    
     <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
+    
+    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
     
@@ -472,7 +472,7 @@
     <link href="https://koufuchi.github.io/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/"/>
     <id>https://koufuchi.github.io/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/</id>
     <published>2023-04-19T14:42:07.000Z</published>
-    <updated>2023-09-01T09:53:40.577Z</updated>
+    <updated>2023-09-01T09:55:20.077Z</updated>
     
     <content type="html"><![CDATA[<aside>💡 適用於 mac os 且使用 Homebrew 管理 php 環境</aside><hr><h2 id="核心為以下兩行">核心為以下兩行 :</h2><pre><code class="language-bash">brew unlink php@7.3 brew link -f php@8.1</code></pre><h2 id="每次都要記很煩所以寫了個簡單-script">每次都要記很煩所以寫了個簡單 script :</h2><p><a href="https://github.com/Koufuchi/php_version_switcher">GitHub - Koufuchi/php_version_switcher</a></p><h2 id="用命令行移動到-script-所在目錄，執行以下語法並指定版本即可切換：">用命令行移動到 script 所在目錄，執行以下語法並指定版本即可切換：</h2><pre><code class="language-bash">. ~/ps.sh 7.3  # 檔名自己取，執行時後面餵版本參數，如果參數錯誤則會列出你本機安裝的所有版本</code></pre><h2 id="或是真的超懶，就在-zshrc-中加入">或是真的超懶，就在 ~/.zshrc 中加入 :</h2><pre><code class="language-bash">export PATH=&quot;$PATH:/&lt;your script path&gt;/&quot;  # script 所在目錄</code></pre><h2 id="之後打開-terminal-後就直接輸入以下就好">之後打開 terminal 後就直接輸入以下就好 :</h2><pre><code class="language-bash"> ps.sh 7.3 </code></pre><p>注意所有指令都會跑去你指定的目錄對，所以其實不太推薦這樣玩</p>]]></content>
     
