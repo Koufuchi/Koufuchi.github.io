@@ -6,7 +6,7 @@
   <link href="https://koufuchi.github.io/atom.xml" rel="self"/>
   
   <link href="https://koufuchi.github.io/"/>
-  <updated>2023-09-01T10:12:23.318Z</updated>
+  <updated>2023-09-01T10:16:28.697Z</updated>
   <id>https://koufuchi.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://koufuchi.github.io/2023/05/07/Cache/CacheConsistencyCanal/"/>
     <id>https://koufuchi.github.io/2023/05/07/Cache/CacheConsistencyCanal/</id>
     <published>2023-05-07T12:58:29.000Z</published>
-    <updated>2023-09-01T10:12:23.318Z</updated>
+    <updated>2023-09-01T10:16:28.697Z</updated>
     
     <content type="html"><![CDATA[<h2 id="阿里巴巴的開源專案-canal">阿里巴巴的開源專案 canal :</h2><blockquote><ul><li>讀：和 Read Aside 一樣。先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：只寫回 DB，canal 會從 DB 的 binlog 複製到 Cache (canal 扮演 Slave 的角色去監聽 binlog)。</li></ul><p>補充 : binlog 是 MySQL 二進位制格式的日誌，只要資料庫有操作，就會寫入 binlog。</p></blockquote><h2 id="MySQL-主從複製">MySQL 主從複製 :</h2><blockquote><p>在探討 canal 如何運作之前，我們必須先了解 MySQL 是如何達到主從複製的 :</p><p><img src="/images/MySQLMasterSlave.jpeg" alt=""></p><ol><li>Slave 產生 I/O thread 向 Master 請求 binlog。</li><li>Master 會產生一個 log dump thread，負責傳 binlog 給 Slave 的 I/O thread，而在讀取和發送<br>給 Slave 的過程中會將 binlog 上鎖。</li><li>Slave I/O thread 將得到的 binlog 日志<strong>寫入</strong> Relay log(中繼日誌) 文件中。</li><li>Slave 產生 SQL thread 讀取 Relay log 文件中的日誌，並<strong>解析</strong>成具體操作，這樣就能保證主從操作一致，即達成資料一致。</li></ol><p>你可能已經發現了他實際上還是會存在不一致的時間，至於具體是多久，可能的影響因素很多，包括網路如何連接、有多少個從機、採用什麼樣的主從架構和同步方式等等…。</p><p>大部分人給出的答案都是在同個 lan 下是瞬時的，因為採用獨立的 thread 和 socket 連接，且 binlog 是二進制文件，但是具體的數據官方也沒有提供，可能需要自己測試，可以架好環境後用 SHOW SLAVE STATUS 看 seconds_behind_master 的值。</p></blockquote><h2 id="canal-工作原理">canal 工作原理 :</h2><blockquote><p>如同上面提到的，MySQL 主從複製是一個成熟且使用者眾多的架構，他的目的也是為了解決分散式架構造成的一致性問題，所以如果我們能讓一個服務偽裝成 Slave 加入這個架構，就能直接沿用這個可靠的架構。</p><p><img src="/images/canal.png" alt=""></p><p>如上圖，canal 模擬 MySQL Slave 的交互協議，讓自己偽裝成 MySQL Slave，並向 MySQL Master 發送 dump 協議，之後 MySQL Master 收到 dump 請求，開始推送 binlog 给 Slave (即 canal)，之後 canal 再解析 binlog，就能再去同步到快取或是做其他事情。</p></blockquote><h2 id="小結">小結 :</h2><blockquote><p>canal 其實是基於 MySQL 解決一致性的方法作延伸來達成快取架構，但也代表其綁定了 MySQL，如果你是使用其他關聯式資料庫就不適用，可能需要另外找解法。</p><p>在之後的文章裡，我們會探討 Meta 是如何設計快取架構的，由於不是基於單一資料庫的延伸，他的架構會更加的複雜，以達到 99.99999999% 的快取寫入一致性。</p></blockquote><h2 id="參考">參考 :</h2><ul><li><a href="https://github.com/alibaba/canal">canal 官方開源</a></li><li><a href="https://github.com/xingwenge/canal-php">canal-php(基於 canal)</a></li></ul>]]></content>
     
