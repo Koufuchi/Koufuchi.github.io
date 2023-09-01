@@ -6,7 +6,7 @@
   <link href="https://koufuchi.github.io/atom.xml" rel="self"/>
   
   <link href="https://koufuchi.github.io/"/>
-  <updated>2023-09-01T09:49:21.595Z</updated>
+  <updated>2023-09-01T09:53:31.043Z</updated>
   <id>https://koufuchi.github.io/</id>
   
   <author>
@@ -21,18 +21,18 @@
     <link href="https://koufuchi.github.io/2023/05/07/Cache/CacheConsistencyCanal/"/>
     <id>https://koufuchi.github.io/2023/05/07/Cache/CacheConsistencyCanal/</id>
     <published>2023-05-07T12:58:29.000Z</published>
-    <updated>2023-09-01T09:49:21.595Z</updated>
+    <updated>2023-09-01T09:53:31.043Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/default.png" alt=""></p><h2 id="阿里巴巴的開源專案-canal">阿里巴巴的開源專案 canal :</h2><blockquote><ul><li>讀：和 Read Aside 一樣。先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：只寫回 DB，canal 會從 DB 的 binlog 複製到 Cache (canal 扮演 Slave 的角色去監聽 binlog)。</li></ul><p>補充 : binlog 是 MySQL 二進位制格式的日誌，只要資料庫有操作，就會寫入 binlog。</p></blockquote><h2 id="MySQL-主從複製">MySQL 主從複製 :</h2><blockquote><p>在探討 canal 如何運作之前，我們必須先了解 MySQL 是如何達到主從複製的 :</p><p><img src="/images/MySQLMasterSlave.jpeg" alt=""></p><ol><li>Slave 產生 I/O thread 向 Master 請求 binlog。</li><li>Master 會產生一個 log dump thread，負責傳 binlog 給 Slave 的 I/O thread，而在讀取和發送<br>給 Slave 的過程中會將 binlog 上鎖。</li><li>Slave I/O thread 將得到的 binlog 日志<strong>寫入</strong> Relay log(中繼日誌) 文件中。</li><li>Slave 產生 SQL thread 讀取 Relay log 文件中的日誌，並<strong>解析</strong>成具體操作，這樣就能保證主從操作一致，即達成資料一致。</li></ol><p>你可能已經發現了他實際上還是會存在不一致的時間，至於具體是多久，可能的影響因素很多，包括網路如何連接、有多少個從機、採用什麼樣的主從架構和同步方式等等…。</p><p>大部分人給出的答案都是在同個 lan 下是瞬時的，因為採用獨立的 thread 和 socket 連接，且 binlog 是二進制文件，但是具體的數據官方也沒有提供，可能需要自己測試，可以架好環境後用 SHOW SLAVE STATUS 看 seconds_behind_master 的值。</p></blockquote><h2 id="canal-工作原理">canal 工作原理 :</h2><blockquote><p>如同上面提到的，MySQL 主從複製是一個成熟且使用者眾多的架構，他的目的也是為了解決分散式架構造成的一致性問題，所以如果我們能讓一個服務偽裝成 Slave 加入這個架構，就能直接沿用這個可靠的架構。</p><p><img src="/images/canal.png" alt=""></p><p>如上圖，canal 模擬 MySQL Slave 的交互協議，讓自己偽裝成 MySQL Slave，並向 MySQL Master 發送 dump 協議，之後 MySQL Master 收到 dump 請求，開始推送 binlog 给 Slave (即 canal)，之後 canal 再解析 binlog，就能再去同步到快取或是做其他事情。</p></blockquote><h2 id="小結">小結 :</h2><blockquote><p>canal 其實是基於 MySQL 解決一致性的方法作延伸來達成快取架構，但也代表其綁定了 MySQL，如果你是使用其他關聯式資料庫就不適用，可能需要另外找解法。</p><p>在之後的文章裡，我們會探討 Meta 是如何設計快取架構的，由於不是基於單一資料庫的延伸，他的架構會更加的複雜，以達到 99.99999999% 的快取寫入一致性。</p></blockquote><h2 id="參考">參考 :</h2><ul><li><a href="https://github.com/alibaba/canal">canal 官方開源</a></li><li><a href="https://github.com/xingwenge/canal-php">canal-php(基於 canal)</a></li></ul>]]></content>
+    <content type="html"><![CDATA[<p>top_img: images/default.png</p><h2 id="阿里巴巴的開源專案-canal">阿里巴巴的開源專案 canal :</h2><blockquote><ul><li>讀：和 Read Aside 一樣。先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：只寫回 DB，canal 會從 DB 的 binlog 複製到 Cache (canal 扮演 Slave 的角色去監聽 binlog)。</li></ul><p>補充 : binlog 是 MySQL 二進位制格式的日誌，只要資料庫有操作，就會寫入 binlog。</p></blockquote><h2 id="MySQL-主從複製">MySQL 主從複製 :</h2><blockquote><p>在探討 canal 如何運作之前，我們必須先了解 MySQL 是如何達到主從複製的 :</p><p><img src="/images/MySQLMasterSlave.jpeg" alt=""></p><ol><li>Slave 產生 I/O thread 向 Master 請求 binlog。</li><li>Master 會產生一個 log dump thread，負責傳 binlog 給 Slave 的 I/O thread，而在讀取和發送<br>給 Slave 的過程中會將 binlog 上鎖。</li><li>Slave I/O thread 將得到的 binlog 日志<strong>寫入</strong> Relay log(中繼日誌) 文件中。</li><li>Slave 產生 SQL thread 讀取 Relay log 文件中的日誌，並<strong>解析</strong>成具體操作，這樣就能保證主從操作一致，即達成資料一致。</li></ol><p>你可能已經發現了他實際上還是會存在不一致的時間，至於具體是多久，可能的影響因素很多，包括網路如何連接、有多少個從機、採用什麼樣的主從架構和同步方式等等…。</p><p>大部分人給出的答案都是在同個 lan 下是瞬時的，因為採用獨立的 thread 和 socket 連接，且 binlog 是二進制文件，但是具體的數據官方也沒有提供，可能需要自己測試，可以架好環境後用 SHOW SLAVE STATUS 看 seconds_behind_master 的值。</p></blockquote><h2 id="canal-工作原理">canal 工作原理 :</h2><blockquote><p>如同上面提到的，MySQL 主從複製是一個成熟且使用者眾多的架構，他的目的也是為了解決分散式架構造成的一致性問題，所以如果我們能讓一個服務偽裝成 Slave 加入這個架構，就能直接沿用這個可靠的架構。</p><p><img src="/images/canal.png" alt=""></p><p>如上圖，canal 模擬 MySQL Slave 的交互協議，讓自己偽裝成 MySQL Slave，並向 MySQL Master 發送 dump 協議，之後 MySQL Master 收到 dump 請求，開始推送 binlog 给 Slave (即 canal)，之後 canal 再解析 binlog，就能再去同步到快取或是做其他事情。</p></blockquote><h2 id="小結">小結 :</h2><blockquote><p>canal 其實是基於 MySQL 解決一致性的方法作延伸來達成快取架構，但也代表其綁定了 MySQL，如果你是使用其他關聯式資料庫就不適用，可能需要另外找解法。</p><p>在之後的文章裡，我們會探討 Meta 是如何設計快取架構的，由於不是基於單一資料庫的延伸，他的架構會更加的複雜，以達到 99.99999999% 的快取寫入一致性。</p></blockquote><h2 id="參考">參考 :</h2><ul><li><a href="https://github.com/alibaba/canal">canal 官方開源</a></li><li><a href="https://github.com/xingwenge/canal-php">canal-php(基於 canal)</a></li></ul>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/default.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    <summary type="html">&lt;p&gt;top_img: images/default.png&lt;/p&gt;
 &lt;h2 id=&quot;阿里巴巴的開源專案-canal&quot;&gt;阿里巴巴的開源專案 canal :&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;ul&gt;
-&lt;li&gt;讀：和 Read Aside 一樣。先從 Cac</summary>
+&lt;li&gt;讀：和 Read Aside 一樣。先從 Cache 讀，讀到就回，沒</summary>
       
     
     
@@ -44,9 +44,9 @@
     
     <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
-    
     <category term="MySQL" scheme="https://koufuchi.github.io/tags/MySQL/"/>
+    
+    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
     
   </entry>
   
@@ -55,17 +55,17 @@
     <link href="https://koufuchi.github.io/2023/05/07/Cache/CacheConsistency/"/>
     <id>https://koufuchi.github.io/2023/05/07/Cache/CacheConsistency/</id>
     <published>2023-05-07T04:42:32.000Z</published>
-    <updated>2023-09-01T09:49:21.600Z</updated>
+    <updated>2023-09-01T09:53:31.043Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/default.png" alt=""></p><h2 id="快取是什麼">快取是什麼 :</h2><blockquote><p>我們都知道電腦的核心運算是由 CPU 負責的，而我們的主要的資料儲存單元是硬碟，由於要在硬碟裡面搜尋資料並帶回來是一件時間成本極高的事，所以就有了<strong>將找過的資料暫存起來</strong>的概念，如下圖 :</p><p><img src="/images/cacheIO.png" alt=""></p><p>CPU 會先在 CPU Cache 裡尋找資料，當發現沒有之後就會去 main memory(DRAM) 找，再沒有才會去硬碟找。<br>找到之後就會一路寫回來，這樣你下次要找同樣資料時就不用再跑這麼遠去硬碟找。</p><p>我們之後會探討的快取就是 main memory(DRAM) 與硬碟的這一塊。</p></blockquote><h2 id="為什麼要使用快取">為什麼要使用快取 :</h2><blockquote><ol><li>DB 很慢 : 因為 RDBMS 需要保證 <a href="https://zh.wikipedia.org/zh-tw/ACID">ACID</a>，所以必須等待整個流程跑完。</li><li>DB 很貴 : 由於 RDBMS 的資料儲存在硬碟，會需要更多次 IO，上面已說明過。</li><li>DB 離使用者很遠 : 從使用者到你的伺服器再到你的資料庫，中間的關卡相當多。</li></ol></blockquote><h2 id="為什麼快取會有一致性難題">為什麼快取會有一致性難題 :</h2><blockquote><p>如果你是分散式系統，那就一定逃不過 <a href="https://zh.wikipedia.org/zh-tw/CAP%E5%AE%9A%E7%90%86">CAP 定理</a>，但如果我只在單一台電腦上同時裝 Cache(ex. Redis) 和 DB(ex. MySQL)，還會有一致性難題嗎？讓我們接著以實作方式來探討。</p></blockquote><h2 id="快取模式-Read-Aside">快取模式 - Read Aside :</h2><blockquote><p><img src="/images/cacheReadAside.png" alt=""></p><ul><li>讀：先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：先寫回 DB，接著清掉 Cache。</li></ul><p>大部分情況都會正常，因為架構很簡單所以是常見的做法。<br>缺點為極端情況下不符合一致性，因為先對 DB 做事再去同步 Cache，所以同步前的時間差會導致非一致性。</p><ul><li>問題一 : A 寫了新資料，但還沒同步到 Cache 前 B 就去讀 Cache 的資料，導致不一致。</li></ul><p><img src="/images/cacheReadAsideProblem1.png" alt=""></p><ul><li>問題二 : A 寫了新資料，但要去同步到 Cache 時出了狀況，導致 DB 和 Cache 不一致。</li></ul><p><img src="/images/cacheReadAsideProblem2.png" alt=""></p><ul><li>問題三 : A 讀資料時發現 Cache 沒資料，所以去 DB 讀，但在寫回 Cache 前 B 就已經更新此資料並清掉Cache 了，這時候 A 才將舊資料寫回 Cache，導致不一致。</li></ul><p><img src="/images/cacheReadAsideProblem3.png" alt=""></p></blockquote><h2 id="快取模式-Double-Delete">快取模式 - Double Delete :</h2><blockquote><p><img src="/images/cacheReadAside.png" alt=""></p><ul><li>讀：先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：先清掉 Cache 再寫回 DB，接著<strong>等一下</strong>(依需求調整，例如 0.5s) 再清掉 Cache。</li></ul><p>我們可以發現他和 Read Aside 只差在寫的部分，原理是先避免其他人讀到舊資料，之後寫入 DB，先等一下再清掉 Cache 的過程則是為了減少 Read Aside 的問題三發生機率，所以雖然一致的機率提高了，但終究是會在極端情況下不符合一致性。</p></blockquote><h2 id="快取模式-Read-through">快取模式 - Read through :</h2><blockquote><p><img src="/images/cacheReadThrough.png" alt=""></p><ul><li>讀：先從 Cache 讀，讀到就回，沒讀到就<strong>由 Cache 從 DB 讀</strong>。</li><li>寫：無所謂，通常結合 Write Through 或 Write Behind 使用。</li></ul><p>注意<strong>由 Cache 從 DB 讀</strong>的實現 Redis 並不支援，NCache 則是需要收費。<br>可以自己實作 Data Access Layer(DAL)，在 DAL 裡用內部 api 伺服器去決定讀 Cache 還是 DB，而對於應用程式來說並不需要知道到底打了誰或是有沒有緩存，他只要知道可以透過 DAL 快速得到資料就好。</p></blockquote><h2 id="快取模式-Write-through">快取模式 - Write through :</h2><blockquote><p><img src="/images/cacheReadThrough.png" alt=""></p><ul><li>讀：無所謂，通常結合 Read Through 使用。</li><li>寫：只更新 Cache，並<strong>由 Cache 去更新 DB</strong>。</li></ul><p>注意跟 Read through 一樣，<strong>由 Cache 去更新 DB</strong> 的實現 Redis 並不支援，NCache 則是需要收費。<br>所以一樣可以藉由實作 Data Access Layer(DAL)來實現。</p><p>也就是說，當你使用 Read through + Write through 來實作快取架構，相當於你都只對 DAL 操作，這樣的優點是可以解決 Read Aside 的問題，但也引發了新的問題 :</p><ol><li>速度慢，因為你同時要寫完 Cache 和 DB 才算完成。</li><li>如果你不是用 DAL 而是原生支援 DB 連線的 Cache 的話，如果在 Cache 未寫入 DB 前就斷電重啟的話，那筆尚未更新到 DB 的資料就會永久遺失。</li></ol></blockquote><h2 id="快取模式-Write-Ahead-Behind-Back">快取模式 - Write Ahead (Behind)(Back) :</h2><blockquote><p><img src="/images/cacheWriteAhead.png" alt=""></p><ul><li>讀：無所謂，通常結合 Read Through 使用。</li><li>寫：需實作 DAL，並<strong>由 DAL 去更新 Cache 和 DB</strong>。</li></ul><p>和 Write through 不一樣需實作 DAL，並且會使用 Message Queue 來管理請求，這樣就可以避免 Cache 永久遺失資料的問題，也可以進一步實現對資料庫的批次寫入以減少寫入次數(Write Back)，但這樣的架構不好實現，需要處理非常多的細節，除非你真的需要這樣的可靠性，不然直接實作 Read Aside 是最簡單的。</p></blockquote><h2 id="小結">小結 :</h2><blockquote><p>介紹了這麼多不同做法，我們應該可以深刻體會一致性的難題有多複雜，以及這些架構背後可能會需要付出的成本，所以在決定你要如何實現快取架構前，你應該先考慮 :</p><ol><li>你的情境為何？為什麼要使用快取？</li><li>你的快取機器要求會有多高？會不會需要分散式？</li><li>比較看重的是一致性還是可用性？</li><li>哪些動作的延遲是可以接受的？哪些不行？讀跟寫的需求那個比較重？</li><li>你的快取需要多高的一致性保證？例如 Meta 可以保證 99.99999999% 的快取寫入一致性。</li></ol><p>在之後的文章裡，我們會探討阿里巴巴和 Meta 是如何設計快取架構的，雖然絕大多數的公司都不需要實現如此高的一致性，但他們的架構還是值得了解。</p></blockquote><h2 id="參考">參考 :</h2><ul><li><a href="https://web.ntnu.edu.tw/~algo/AlgorithmDesign.html#11">I/O-efficient Algorithm</a></li><li><a href="https://hackmd.io/@drwQtdGASN2n-vt_4poKnw/H1U6NgK3Z">CPU Cache 原理探討</a></li><li><a href="https://www.cs.pu.edu.tw/~bcc/93course/ch18.pdf">計算機組織與結構</a></li><li><a href="https://medium.com/starbugs/consistency-between-cache-and-database-part-1-f64f4a76720">Consistency between Cache and Database, Part 1</a></li><li><a href="https://medium.com/starbugs/consistency-between-cache-and-database-part-2-e28fc7f8a7c3">Consistency between Cache and Database, Part 2</a></li><li><a href="https://ithelp.ithome.com.tw/articles/10224938">資料緩存失效問題</a></li></ul>]]></content>
+    <content type="html"><![CDATA[<p>top_img: images/default.png</p><h2 id="快取是什麼">快取是什麼 :</h2><blockquote><p>我們都知道電腦的核心運算是由 CPU 負責的，而我們的主要的資料儲存單元是硬碟，由於要在硬碟裡面搜尋資料並帶回來是一件時間成本極高的事，所以就有了<strong>將找過的資料暫存起來</strong>的概念，如下圖 :</p><p><img src="/images/cacheIO.png" alt=""></p><p>CPU 會先在 CPU Cache 裡尋找資料，當發現沒有之後就會去 main memory(DRAM) 找，再沒有才會去硬碟找。<br>找到之後就會一路寫回來，這樣你下次要找同樣資料時就不用再跑這麼遠去硬碟找。</p><p>我們之後會探討的快取就是 main memory(DRAM) 與硬碟的這一塊。</p></blockquote><h2 id="為什麼要使用快取">為什麼要使用快取 :</h2><blockquote><ol><li>DB 很慢 : 因為 RDBMS 需要保證 <a href="https://zh.wikipedia.org/zh-tw/ACID">ACID</a>，所以必須等待整個流程跑完。</li><li>DB 很貴 : 由於 RDBMS 的資料儲存在硬碟，會需要更多次 IO，上面已說明過。</li><li>DB 離使用者很遠 : 從使用者到你的伺服器再到你的資料庫，中間的關卡相當多。</li></ol></blockquote><h2 id="為什麼快取會有一致性難題">為什麼快取會有一致性難題 :</h2><blockquote><p>如果你是分散式系統，那就一定逃不過 <a href="https://zh.wikipedia.org/zh-tw/CAP%E5%AE%9A%E7%90%86">CAP 定理</a>，但如果我只在單一台電腦上同時裝 Cache(ex. Redis) 和 DB(ex. MySQL)，還會有一致性難題嗎？讓我們接著以實作方式來探討。</p></blockquote><h2 id="快取模式-Read-Aside">快取模式 - Read Aside :</h2><blockquote><p><img src="/images/cacheReadAside.png" alt=""></p><ul><li>讀：先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：先寫回 DB，接著清掉 Cache。</li></ul><p>大部分情況都會正常，因為架構很簡單所以是常見的做法。<br>缺點為極端情況下不符合一致性，因為先對 DB 做事再去同步 Cache，所以同步前的時間差會導致非一致性。</p><ul><li>問題一 : A 寫了新資料，但還沒同步到 Cache 前 B 就去讀 Cache 的資料，導致不一致。</li></ul><p><img src="/images/cacheReadAsideProblem1.png" alt=""></p><ul><li>問題二 : A 寫了新資料，但要去同步到 Cache 時出了狀況，導致 DB 和 Cache 不一致。</li></ul><p><img src="/images/cacheReadAsideProblem2.png" alt=""></p><ul><li>問題三 : A 讀資料時發現 Cache 沒資料，所以去 DB 讀，但在寫回 Cache 前 B 就已經更新此資料並清掉Cache 了，這時候 A 才將舊資料寫回 Cache，導致不一致。</li></ul><p><img src="/images/cacheReadAsideProblem3.png" alt=""></p></blockquote><h2 id="快取模式-Double-Delete">快取模式 - Double Delete :</h2><blockquote><p><img src="/images/cacheReadAside.png" alt=""></p><ul><li>讀：先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：先清掉 Cache 再寫回 DB，接著<strong>等一下</strong>(依需求調整，例如 0.5s) 再清掉 Cache。</li></ul><p>我們可以發現他和 Read Aside 只差在寫的部分，原理是先避免其他人讀到舊資料，之後寫入 DB，先等一下再清掉 Cache 的過程則是為了減少 Read Aside 的問題三發生機率，所以雖然一致的機率提高了，但終究是會在極端情況下不符合一致性。</p></blockquote><h2 id="快取模式-Read-through">快取模式 - Read through :</h2><blockquote><p><img src="/images/cacheReadThrough.png" alt=""></p><ul><li>讀：先從 Cache 讀，讀到就回，沒讀到就<strong>由 Cache 從 DB 讀</strong>。</li><li>寫：無所謂，通常結合 Write Through 或 Write Behind 使用。</li></ul><p>注意<strong>由 Cache 從 DB 讀</strong>的實現 Redis 並不支援，NCache 則是需要收費。<br>可以自己實作 Data Access Layer(DAL)，在 DAL 裡用內部 api 伺服器去決定讀 Cache 還是 DB，而對於應用程式來說並不需要知道到底打了誰或是有沒有緩存，他只要知道可以透過 DAL 快速得到資料就好。</p></blockquote><h2 id="快取模式-Write-through">快取模式 - Write through :</h2><blockquote><p><img src="/images/cacheReadThrough.png" alt=""></p><ul><li>讀：無所謂，通常結合 Read Through 使用。</li><li>寫：只更新 Cache，並<strong>由 Cache 去更新 DB</strong>。</li></ul><p>注意跟 Read through 一樣，<strong>由 Cache 去更新 DB</strong> 的實現 Redis 並不支援，NCache 則是需要收費。<br>所以一樣可以藉由實作 Data Access Layer(DAL)來實現。</p><p>也就是說，當你使用 Read through + Write through 來實作快取架構，相當於你都只對 DAL 操作，這樣的優點是可以解決 Read Aside 的問題，但也引發了新的問題 :</p><ol><li>速度慢，因為你同時要寫完 Cache 和 DB 才算完成。</li><li>如果你不是用 DAL 而是原生支援 DB 連線的 Cache 的話，如果在 Cache 未寫入 DB 前就斷電重啟的話，那筆尚未更新到 DB 的資料就會永久遺失。</li></ol></blockquote><h2 id="快取模式-Write-Ahead-Behind-Back">快取模式 - Write Ahead (Behind)(Back) :</h2><blockquote><p><img src="/images/cacheWriteAhead.png" alt=""></p><ul><li>讀：無所謂，通常結合 Read Through 使用。</li><li>寫：需實作 DAL，並<strong>由 DAL 去更新 Cache 和 DB</strong>。</li></ul><p>和 Write through 不一樣需實作 DAL，並且會使用 Message Queue 來管理請求，這樣就可以避免 Cache 永久遺失資料的問題，也可以進一步實現對資料庫的批次寫入以減少寫入次數(Write Back)，但這樣的架構不好實現，需要處理非常多的細節，除非你真的需要這樣的可靠性，不然直接實作 Read Aside 是最簡單的。</p></blockquote><h2 id="小結">小結 :</h2><blockquote><p>介紹了這麼多不同做法，我們應該可以深刻體會一致性的難題有多複雜，以及這些架構背後可能會需要付出的成本，所以在決定你要如何實現快取架構前，你應該先考慮 :</p><ol><li>你的情境為何？為什麼要使用快取？</li><li>你的快取機器要求會有多高？會不會需要分散式？</li><li>比較看重的是一致性還是可用性？</li><li>哪些動作的延遲是可以接受的？哪些不行？讀跟寫的需求那個比較重？</li><li>你的快取需要多高的一致性保證？例如 Meta 可以保證 99.99999999% 的快取寫入一致性。</li></ol><p>在之後的文章裡，我們會探討阿里巴巴和 Meta 是如何設計快取架構的，雖然絕大多數的公司都不需要實現如此高的一致性，但他們的架構還是值得了解。</p></blockquote><h2 id="參考">參考 :</h2><ul><li><a href="https://web.ntnu.edu.tw/~algo/AlgorithmDesign.html#11">I/O-efficient Algorithm</a></li><li><a href="https://hackmd.io/@drwQtdGASN2n-vt_4poKnw/H1U6NgK3Z">CPU Cache 原理探討</a></li><li><a href="https://www.cs.pu.edu.tw/~bcc/93course/ch18.pdf">計算機組織與結構</a></li><li><a href="https://medium.com/starbugs/consistency-between-cache-and-database-part-1-f64f4a76720">Consistency between Cache and Database, Part 1</a></li><li><a href="https://medium.com/starbugs/consistency-between-cache-and-database-part-2-e28fc7f8a7c3">Consistency between Cache and Database, Part 2</a></li><li><a href="https://ithelp.ithome.com.tw/articles/10224938">資料緩存失效問題</a></li></ul>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/default.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    <summary type="html">&lt;p&gt;top_img: images/default.png&lt;/p&gt;
 &lt;h2 id=&quot;快取是什麼&quot;&gt;快取是什麼 :&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;我們都知道電腦的核心運算是由 CPU 負責的，而我們的主要的資料儲存單元是硬碟，由於要在硬碟裡面搜尋</summary>
+&lt;p&gt;我們都知道電腦的核心運算是由 CPU 負責的，而我們的主要的資料儲存單元是硬碟，由於要在硬碟裡面搜尋資料並帶回來是一件時間</summary>
       
     
     
@@ -75,13 +75,13 @@
     
     <category term="Cache" scheme="https://koufuchi.github.io/tags/Cache/"/>
     
-    <category term="計算機組織" scheme="https://koufuchi.github.io/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/"/>
-    
     <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="Message queue" scheme="https://koufuchi.github.io/tags/Message-queue/"/>
-    
     <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
+    
+    <category term="計算機組織" scheme="https://koufuchi.github.io/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/"/>
+    
+    <category term="Message queue" scheme="https://koufuchi.github.io/tags/Message-queue/"/>
     
   </entry>
   
@@ -109,11 +109,11 @@
     
     <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
     
+    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    
     <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
-    
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
     
@@ -145,11 +145,11 @@
     
     <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
     
+    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    
     <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
-    
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
     
@@ -181,11 +181,11 @@
     
     <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
     
+    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    
     <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
-    
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
     
@@ -218,11 +218,11 @@
     
     <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
     
+    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    
     <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
-    
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
     
@@ -235,17 +235,17 @@
     <link href="https://koufuchi.github.io/2023/05/01/SystemdToKeepAlive/"/>
     <id>https://koufuchi.github.io/2023/05/01/SystemdToKeepAlive/</id>
     <published>2023-05-01T05:45:27.000Z</published>
-    <updated>2023-09-01T09:49:21.595Z</updated>
+    <updated>2023-09-01T09:53:31.034Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/default.png" alt=""></p><h2 id="簡介">簡介 :</h2><blockquote><p>systemd 基於一個事件驅動的機制，它可以同時啟動並管理多個服務，並在服務失敗或系統崩潰時自動重啟服務。它還提供了各種管理命令和工具，用於管理系統日誌、網絡配置、作業系統時間等等…。</p></blockquote><h2 id="首先，移動到系統單位檔案的存放位置">首先，移動到系統單位檔案的存放位置 :</h2><pre><code class="language-sh">cd /etc/systemd/system   # 我是用 ubuntu 22.04 版本，如果你路徑不一樣請自己找</code></pre><h2 id="建立系統單位檔案">建立系統單位檔案 :</h2><pre><code class="language-sh">touch &lt;your service name&gt;.service</code></pre><h2 id="打開你建立的檔案並寫入設定">打開你建立的檔案並寫入設定 :</h2><pre><code class="language-sh">[Unit]Description=&lt;write your description&gt;[Service]# 讓 systemd 知道編譯器和啟動檔案在哪，以及啟動方式，一般來說你怎麼啟動的就直接貼過來，不過他不吃你的 $PATH 所以要給完整路徑ExecStart=/usr/bin/python3 -u /home/ubuntu/projects/DiscordBot/main.py  WorkingDirectory=/home/ubuntu/projects/DiscordBot/User=ubuntu  # 要記得確保有權限讀取和執行 WorkingDirectory 底下所有檔案Group=ubuntu  # 要記得確保有權限讀取和執行 WorkingDirectory 底下所有檔案Restart=on-failure[Install]WantedBy=multi-user.target</code></pre><h2 id="開始執行">開始執行 :</h2><pre><code class="language-sh">sudo systemctl start &lt;your service name&gt;.service</code></pre><h2 id="查看服務狀態">查看服務狀態 :</h2><pre><code class="language-sh">sudo systemctl status &lt;your service name&gt;.service</code></pre><h2 id="當你有變更你的-service-內容時，需要先-reload">當你有變更你的 .service 內容時，需要先 reload :</h2><pre><code class="language-sh">sudo systemctl daemon-reload</code></pre><h2 id="其他語法">其他語法 :</h2><ul><li>設定為啟動系統時就自動啟動 :</li></ul><pre><code class="language-sh">sudo systemctl enable &lt;your service name&gt;.service</code></pre><ul><li>停止服務 :</li></ul><pre><code class="language-sh">sudo systemctl stop &lt;your service name&gt;.service</code></pre><ul><li>重啟服務 :</li></ul><pre><code class="language-sh">sudo systemctl restart &lt;your service name&gt;.service</code></pre><ul><li>查看錯誤日誌 :</li></ul><pre><code class="language-sh">journalctl -u &lt;your service name&gt;.service</code></pre>]]></content>
+    <content type="html"><![CDATA[<p>top_img: images/default.png</p><h2 id="簡介">簡介 :</h2><blockquote><p>systemd 基於一個事件驅動的機制，它可以同時啟動並管理多個服務，並在服務失敗或系統崩潰時自動重啟服務。它還提供了各種管理命令和工具，用於管理系統日誌、網絡配置、作業系統時間等等…。</p></blockquote><h2 id="首先，移動到系統單位檔案的存放位置">首先，移動到系統單位檔案的存放位置 :</h2><pre><code class="language-sh">cd /etc/systemd/system   # 我是用 ubuntu 22.04 版本，如果你路徑不一樣請自己找</code></pre><h2 id="建立系統單位檔案">建立系統單位檔案 :</h2><pre><code class="language-sh">touch &lt;your service name&gt;.service</code></pre><h2 id="打開你建立的檔案並寫入設定">打開你建立的檔案並寫入設定 :</h2><pre><code class="language-sh">[Unit]Description=&lt;write your description&gt;[Service]# 讓 systemd 知道編譯器和啟動檔案在哪，以及啟動方式，一般來說你怎麼啟動的就直接貼過來，不過他不吃你的 $PATH 所以要給完整路徑ExecStart=/usr/bin/python3 -u /home/ubuntu/projects/DiscordBot/main.py  WorkingDirectory=/home/ubuntu/projects/DiscordBot/User=ubuntu  # 要記得確保有權限讀取和執行 WorkingDirectory 底下所有檔案Group=ubuntu  # 要記得確保有權限讀取和執行 WorkingDirectory 底下所有檔案Restart=on-failure[Install]WantedBy=multi-user.target</code></pre><h2 id="開始執行">開始執行 :</h2><pre><code class="language-sh">sudo systemctl start &lt;your service name&gt;.service</code></pre><h2 id="查看服務狀態">查看服務狀態 :</h2><pre><code class="language-sh">sudo systemctl status &lt;your service name&gt;.service</code></pre><h2 id="當你有變更你的-service-內容時，需要先-reload">當你有變更你的 .service 內容時，需要先 reload :</h2><pre><code class="language-sh">sudo systemctl daemon-reload</code></pre><h2 id="其他語法">其他語法 :</h2><ul><li>設定為啟動系統時就自動啟動 :</li></ul><pre><code class="language-sh">sudo systemctl enable &lt;your service name&gt;.service</code></pre><ul><li>停止服務 :</li></ul><pre><code class="language-sh">sudo systemctl stop &lt;your service name&gt;.service</code></pre><ul><li>重啟服務 :</li></ul><pre><code class="language-sh">sudo systemctl restart &lt;your service name&gt;.service</code></pre><ul><li>查看錯誤日誌 :</li></ul><pre><code class="language-sh">journalctl -u &lt;your service name&gt;.service</code></pre>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/default.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    <summary type="html">&lt;p&gt;top_img: images/default.png&lt;/p&gt;
 &lt;h2 id=&quot;簡介&quot;&gt;簡介 :&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;systemd 基於一個事件驅動的機制，它可以同時啟動並管理多個服務，並在服務失敗或系統崩潰時自動重啟服務。它還</summary>
+&lt;p&gt;systemd 基於一個事件驅動的機制，它可以同時啟動並管理多個服務，並在服務失敗或系統崩潰時自動重啟服務。它還提供了各種管理命令和工</summary>
       
     
     
@@ -264,17 +264,17 @@
     <link href="https://koufuchi.github.io/2023/04/30/PostMan/PostmanTest/"/>
     <id>https://koufuchi.github.io/2023/04/30/PostMan/PostmanTest/</id>
     <published>2023-04-30T02:21:41.000Z</published>
-    <updated>2023-09-01T09:49:21.595Z</updated>
+    <updated>2023-09-01T09:53:31.047Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/default.png" alt=""></p><h2 id="Postman-工作區目錄架構">Postman 工作區目錄架構 :</h2><blockquote><p>Postman 的工作區目錄架構為 Collection、Folder、Request、Example，如下圖 :</p><p><img src="/images/postmanStructure.png" alt=""></p><p>注意只有 Folder 可以自己包自己。</p><p>我們可以寫測試的範圍有 Collection、Folder、Request，不包含 Example，原因為 Example 只是把一些參數取出來單獨設定而已，他要執行時會將這些參數覆寫到繼承的 Request 並執行，但終究還是歸附於 Request，所以也會執行 Request 寫好的測試。</p></blockquote><h2 id="自動測試的執行順序">自動測試的執行順序 :</h2><blockquote><p>在 Collection、Folder、Request 界面中我們都可找到和設定「Pre-request Script」以及「Tests」，顧名思義就是一個是先跑的腳本、另一個是最後才跑的腳本，我們假設範例為 Collection 包 Folder 包 Request，且都有設定「Pre-request Script」以及「Tests」，那麼當你按下 Send Request 後的執行順序就是 :</p><ol><li>Collection Pre-request Script</li><li>Folder Pre-request Script</li><li>Request Pre-request Script</li><li>Request 本身</li><li>Request Tests</li><li>Folder Tests</li><li>Collection Tests</li></ol><p>從這樣的順序也很明顯可以看出 :</p><ul><li>Pre-request Script 在打 api 前就執行了，可以做的事有檢查參數、預打其他 api 拿 token 等等…。</li><li>Tests 是在打 api 後執行的，可以做的事有檢查回傳狀態、檢查回傳內容等等…。</li></ul></blockquote><h2 id="如何撰寫測試">如何撰寫測試 :</h2><blockquote><p>Postman 的腳本撰寫語法是基於 JavaScript，並提供物件 pm 以供操作，至於詳細有哪些用法官網已經寫得很清楚了，參考 :</p><ul><li><a href="https://learning.postman.com/docs/writing-scripts/pre-request-scripts/">Writing pre-request scripts</a></li><li><a href="https://learning.postman.com/docs/writing-scripts/test-scripts/">Writing tests</a></li></ul></blockquote><h2 id="範例一，打-api-前檢查當前用的-Postman-環境變數">範例一，打 api 前檢查當前用的 Postman 環境變數 :</h2><blockquote><p>情境 : 因為有時候打不同台伺服器或本地時忘了切換環境變數，會導致我對應的 domain 值壞掉。</p></blockquote><pre><code class="language-JavaScript">pm.test(&quot;檢查環境變數&quot;, function () &#123;     pm.expect(pm.environment.get(&quot;domain&quot;)).to.be.oneOf([        &quot;打卡系統正式機&quot;,        &quot;打卡系統測試機&quot;    ]); &#125;);</code></pre><blockquote><p>像這個範例你就可以寫在 Collection 的 Pre-request Script，因為通常一個 Collection 就對應一個系統、服務，其底下的 Request 應該都是吃同一種環境變數。</p></blockquote><h2 id="範例二，檢查-api-response-的狀態">範例二，檢查 api response 的狀態 :</h2><blockquote><p>情境 : 我希望知道此次回傳是否成功(這範例其實蠻雞肋的啦，因為本來界面就會顯示了)。</p></blockquote><pre><code class="language-JavaScript">pm.test(&quot;檢查回傳狀態&quot;, function () &#123;    pm.response.to.have.status(200);&#125;);</code></pre><h2 id="範例三，檢查-api-request-的-JSON-Schema">範例三，檢查 api request 的 JSON Schema :</h2><blockquote><p>情境 : 有時候你邊寫邊打就忘了有些 request 參數忘了改，這時候就能檢查。<br>注意 : Postman 用的 jsonSchema 是最新版的，你需要注意自己使用的版本是否有落差，因為寫法會變。<br>以筆者撰寫這篇文章的時間點來說是 3.1 或以上。</p></blockquote><pre><code class="language-JavaScript">// 定義期望的 JSON Schemalet schema = &#123;    &quot;type&quot;: &quot;object&quot;,    &quot;properties&quot;: &#123;        &quot;orderId&quot;: &#123;            &quot;type&quot;: [&quot;integer&quot;, &quot;null&quot;],        &#125;,        &quot;isVoid&quot;: &#123;            &quot;type&quot;: [&quot;boolean&quot;, &quot;null&quot;],        &#125;    &#125;&#125;// 檢查pm.test(&quot;檢查請求 json 是否符合期望的 jsonSchema&quot;, function () &#123;     pm.request.to.have.jsonSchema(schema);&#125;);</code></pre><h2 id="範例四，檢查-api-response-的-JSON-Schema">範例四，檢查 api response 的 JSON Schema :</h2><blockquote><p>情境 : 我希望回傳的 key 都符合我的期望，例如期望是整數那就不能回傳字串。<br>用法跟上面幾乎一樣，只是你要改從 response 拿而已。</p></blockquote><pre><code class="language-JavaScript">// 定義期望的 JSON Schemalet schema = &#123;    &quot;type&quot;: &quot;object&quot;,    &quot;properties&quot;: &#123;        &quot;typeId&quot;: &#123;            &quot;type&quot;: [&quot;integer&quot;, &quot;null&quot;],        &#125;,        &quot;statusId&quot;: &#123;            &quot;type&quot;: [&quot;integer&quot;, &quot;null&quot;],        &#125;,        &quot;supplierCode&quot;: &#123;            &quot;type&quot;: [&quot;integer&quot;, &quot;null&quot;],        &#125;,        &quot;customerName&quot;: &#123;            &quot;type&quot;: [&quot;string&quot;, &quot;null&quot;],        &#125;    &#125;&#125;;// 檢查pm.test(&quot;檢查回傳 json 是否符合期望的 jsonSchema&quot;, function () &#123;     pm.response.to.have.jsonSchema(schema);&#125;);</code></pre><blockquote><p>你可能會覺得定義 jsonSchema 很麻煩，沒錯！因為我也這樣覺得，所以在這邊提供方法 :</p><ol><li><p>一般來說都會有寫 swagger 給前端對接用，那你就直接拿這個用就好了，簡單粗暴，像 Laravel 框架可以使用 : php artisan l5-swagger:generate 的指令快速產出。</p></li><li><p>你的 request 或 response 在 Postman 上都有完整 JSON 了，所以你可以使用 <a href="https://jsonschema.net/app/schemas">JSON Schema – json 轉 jsonschema</a> 快速轉換，但最麻煩的就是 nullable 你要自己加。</p></li></ol><p><a href="/2023/04/29/ThirdParty/">參考我的另一篇文章 - 常用的第三方工具</a></p></blockquote>]]></content>
+    <content type="html"><![CDATA[<p>top_img: images/default.png</p><h2 id="Postman-工作區目錄架構">Postman 工作區目錄架構 :</h2><blockquote><p>Postman 的工作區目錄架構為 Collection、Folder、Request、Example，如下圖 :</p><p><img src="/images/postmanStructure.png" alt=""></p><p>注意只有 Folder 可以自己包自己。</p><p>我們可以寫測試的範圍有 Collection、Folder、Request，不包含 Example，原因為 Example 只是把一些參數取出來單獨設定而已，他要執行時會將這些參數覆寫到繼承的 Request 並執行，但終究還是歸附於 Request，所以也會執行 Request 寫好的測試。</p></blockquote><h2 id="自動測試的執行順序">自動測試的執行順序 :</h2><blockquote><p>在 Collection、Folder、Request 界面中我們都可找到和設定「Pre-request Script」以及「Tests」，顧名思義就是一個是先跑的腳本、另一個是最後才跑的腳本，我們假設範例為 Collection 包 Folder 包 Request，且都有設定「Pre-request Script」以及「Tests」，那麼當你按下 Send Request 後的執行順序就是 :</p><ol><li>Collection Pre-request Script</li><li>Folder Pre-request Script</li><li>Request Pre-request Script</li><li>Request 本身</li><li>Request Tests</li><li>Folder Tests</li><li>Collection Tests</li></ol><p>從這樣的順序也很明顯可以看出 :</p><ul><li>Pre-request Script 在打 api 前就執行了，可以做的事有檢查參數、預打其他 api 拿 token 等等…。</li><li>Tests 是在打 api 後執行的，可以做的事有檢查回傳狀態、檢查回傳內容等等…。</li></ul></blockquote><h2 id="如何撰寫測試">如何撰寫測試 :</h2><blockquote><p>Postman 的腳本撰寫語法是基於 JavaScript，並提供物件 pm 以供操作，至於詳細有哪些用法官網已經寫得很清楚了，參考 :</p><ul><li><a href="https://learning.postman.com/docs/writing-scripts/pre-request-scripts/">Writing pre-request scripts</a></li><li><a href="https://learning.postman.com/docs/writing-scripts/test-scripts/">Writing tests</a></li></ul></blockquote><h2 id="範例一，打-api-前檢查當前用的-Postman-環境變數">範例一，打 api 前檢查當前用的 Postman 環境變數 :</h2><blockquote><p>情境 : 因為有時候打不同台伺服器或本地時忘了切換環境變數，會導致我對應的 domain 值壞掉。</p></blockquote><pre><code class="language-JavaScript">pm.test(&quot;檢查環境變數&quot;, function () &#123;     pm.expect(pm.environment.get(&quot;domain&quot;)).to.be.oneOf([        &quot;打卡系統正式機&quot;,        &quot;打卡系統測試機&quot;    ]); &#125;);</code></pre><blockquote><p>像這個範例你就可以寫在 Collection 的 Pre-request Script，因為通常一個 Collection 就對應一個系統、服務，其底下的 Request 應該都是吃同一種環境變數。</p></blockquote><h2 id="範例二，檢查-api-response-的狀態">範例二，檢查 api response 的狀態 :</h2><blockquote><p>情境 : 我希望知道此次回傳是否成功(這範例其實蠻雞肋的啦，因為本來界面就會顯示了)。</p></blockquote><pre><code class="language-JavaScript">pm.test(&quot;檢查回傳狀態&quot;, function () &#123;    pm.response.to.have.status(200);&#125;);</code></pre><h2 id="範例三，檢查-api-request-的-JSON-Schema">範例三，檢查 api request 的 JSON Schema :</h2><blockquote><p>情境 : 有時候你邊寫邊打就忘了有些 request 參數忘了改，這時候就能檢查。<br>注意 : Postman 用的 jsonSchema 是最新版的，你需要注意自己使用的版本是否有落差，因為寫法會變。<br>以筆者撰寫這篇文章的時間點來說是 3.1 或以上。</p></blockquote><pre><code class="language-JavaScript">// 定義期望的 JSON Schemalet schema = &#123;    &quot;type&quot;: &quot;object&quot;,    &quot;properties&quot;: &#123;        &quot;orderId&quot;: &#123;            &quot;type&quot;: [&quot;integer&quot;, &quot;null&quot;],        &#125;,        &quot;isVoid&quot;: &#123;            &quot;type&quot;: [&quot;boolean&quot;, &quot;null&quot;],        &#125;    &#125;&#125;// 檢查pm.test(&quot;檢查請求 json 是否符合期望的 jsonSchema&quot;, function () &#123;     pm.request.to.have.jsonSchema(schema);&#125;);</code></pre><h2 id="範例四，檢查-api-response-的-JSON-Schema">範例四，檢查 api response 的 JSON Schema :</h2><blockquote><p>情境 : 我希望回傳的 key 都符合我的期望，例如期望是整數那就不能回傳字串。<br>用法跟上面幾乎一樣，只是你要改從 response 拿而已。</p></blockquote><pre><code class="language-JavaScript">// 定義期望的 JSON Schemalet schema = &#123;    &quot;type&quot;: &quot;object&quot;,    &quot;properties&quot;: &#123;        &quot;typeId&quot;: &#123;            &quot;type&quot;: [&quot;integer&quot;, &quot;null&quot;],        &#125;,        &quot;statusId&quot;: &#123;            &quot;type&quot;: [&quot;integer&quot;, &quot;null&quot;],        &#125;,        &quot;supplierCode&quot;: &#123;            &quot;type&quot;: [&quot;integer&quot;, &quot;null&quot;],        &#125;,        &quot;customerName&quot;: &#123;            &quot;type&quot;: [&quot;string&quot;, &quot;null&quot;],        &#125;    &#125;&#125;;// 檢查pm.test(&quot;檢查回傳 json 是否符合期望的 jsonSchema&quot;, function () &#123;     pm.response.to.have.jsonSchema(schema);&#125;);</code></pre><blockquote><p>你可能會覺得定義 jsonSchema 很麻煩，沒錯！因為我也這樣覺得，所以在這邊提供方法 :</p><ol><li><p>一般來說都會有寫 swagger 給前端對接用，那你就直接拿這個用就好了，簡單粗暴，像 Laravel 框架可以使用 : php artisan l5-swagger:generate 的指令快速產出。</p></li><li><p>你的 request 或 response 在 Postman 上都有完整 JSON 了，所以你可以使用 <a href="https://jsonschema.net/app/schemas">JSON Schema – json 轉 jsonschema</a> 快速轉換，但最麻煩的就是 nullable 你要自己加。</p></li></ol><p><a href="/2023/04/29/ThirdParty/">參考我的另一篇文章 - 常用的第三方工具</a></p></blockquote>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/default.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    <summary type="html">&lt;p&gt;top_img: images/default.png&lt;/p&gt;
 &lt;h2 id=&quot;Postman-工作區目錄架構&quot;&gt;Postman 工作區目錄架構 :&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Postman 的工作區目錄架構為 Collection、F</summary>
+&lt;p&gt;Postman 的工作區目錄架構為 Collection、Folder、Reque</summary>
       
     
     
@@ -295,18 +295,18 @@
     <link href="https://koufuchi.github.io/2023/04/29/ThirdParty/"/>
     <id>https://koufuchi.github.io/2023/04/29/ThirdParty/</id>
     <published>2023-04-29T12:25:54.000Z</published>
-    <updated>2023-09-01T09:49:21.582Z</updated>
+    <updated>2023-09-01T09:53:31.034Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/default.png" alt=""></p><h2 id="工作中用過的一些第三方工具：">工作中用過的一些第三方工具：</h2><ul><li><p><a href="https://regex101.com/">regex101 – 線上測試正規表達式工具</a></p></li><li><p><a href="https://crontab.guru/">crontab guru – 線上測試 corntab 語法工具</a></p></li><li><p><a href="https://sequencediagram.org/">sequencediagram – 畫時序圖工具</a></p></li><li><p><a href="https://app.diagrams.net/">Draw.io – 畫圖工具</a></p></li><li><p><a href="http://sqlfiddle.com/">SQL Fiddle – 線上資料庫工具</a></p></li><li><p><a href="https://dbdiagram.io/home">dbdiagram – 資料庫工具</a></p></li><li><p><a href="https://dbschema.com/">dbSchema – 資料庫工具</a></p></li><li><p><a href="https://jsoneditoronline.org/#left=local.ranopi&amp;right=local.vosuzi">json editor – JSON 比對工具</a></p></li><li><p><a href="https://jsonschema.net/app/schemas">JSON Schema – json 轉 jsonschema</a></p></li><li><p><a href="https://shancarter.github.io/mr-data-converter/">Mr. Data Converter – CSV 轉其他格式</a></p></li><li><p><a href="https://slack.com/intl/zh-tw">Slack – 團隊溝通</a></p></li><li><p><a href="https://www.invisionapp.com/">InVision – 前端畫面工具</a></p></li><li><p><a href="https://www.figma.com/">figma – UI 設計工具</a></p></li></ul>]]></content>
+    <content type="html"><![CDATA[<p>top_img: images/default.png</p><h2 id="工作中用過的一些第三方工具：">工作中用過的一些第三方工具：</h2><ul><li><p><a href="https://regex101.com/">regex101 – 線上測試正規表達式工具</a></p></li><li><p><a href="https://crontab.guru/">crontab guru – 線上測試 corntab 語法工具</a></p></li><li><p><a href="https://sequencediagram.org/">sequencediagram – 畫時序圖工具</a></p></li><li><p><a href="https://app.diagrams.net/">Draw.io – 畫圖工具</a></p></li><li><p><a href="http://sqlfiddle.com/">SQL Fiddle – 線上資料庫工具</a></p></li><li><p><a href="https://dbdiagram.io/home">dbdiagram – 資料庫工具</a></p></li><li><p><a href="https://dbschema.com/">dbSchema – 資料庫工具</a></p></li><li><p><a href="https://jsoneditoronline.org/#left=local.ranopi&amp;right=local.vosuzi">json editor – JSON 比對工具</a></p></li><li><p><a href="https://jsonschema.net/app/schemas">JSON Schema – json 轉 jsonschema</a></p></li><li><p><a href="https://shancarter.github.io/mr-data-converter/">Mr. Data Converter – CSV 轉其他格式</a></p></li><li><p><a href="https://slack.com/intl/zh-tw">Slack – 團隊溝通</a></p></li><li><p><a href="https://www.invisionapp.com/">InVision – 前端畫面工具</a></p></li><li><p><a href="https://www.figma.com/">figma – UI 設計工具</a></p></li></ul>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/default.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    <summary type="html">&lt;p&gt;top_img: images/default.png&lt;/p&gt;
 &lt;h2 id=&quot;工作中用過的一些第三方工具：&quot;&gt;工作中用過的一些第三方工具：&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;a href=&quot;https://regex101.com/&quot;&gt;regex</summary>
+&lt;p&gt;&lt;a href=&quot;https://regex101.com/&quot;&gt;regex101 – 線上測試正</summary>
       
     
     
@@ -323,17 +323,17 @@
     <link href="https://koufuchi.github.io/2023/04/29/git/GitCommitMessage/"/>
     <id>https://koufuchi.github.io/2023/04/29/git/GitCommitMessage/</id>
     <published>2023-04-29T07:42:07.000Z</published>
-    <updated>2023-09-01T09:49:21.595Z</updated>
+    <updated>2023-09-01T09:53:31.043Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/default.png" alt=""></p><h2 id="讓版控更加容易追蹤">讓版控更加容易追蹤 :</h2><blockquote><p>習慣上會將每個 commit 的內容盡量限縮在<strong>單一單元或一件事</strong>上，以讓你的 commit message 和異動處能夠簡潔的對應，對於自己或團隊成員在追蹤進度、回顧異動上都能提高效率。</p><p>在這之上能更快表達此次 commit 意義的做法，就是在 commit message 開頭加上<strong>前綴字</strong>，常見的有 :</p><ul><li>feat : 新增/修改功能 (feature)。</li><li>fix : 修補 bug (bug fix)。</li><li>docs : 文件 (documentation)。</li><li>style : 格式 (不影響程式碼運行的變動 white-space, formatting, missing semi colons, etc)。</li><li>refactor : 重構 (既不是新增功能，也不是修補 bug 的程式碼變動)。</li><li>perf : 改善效能 (A code change that improves performance)。</li><li>test : 增加測試 (when adding missing tests)。</li><li>chore : 建構程序或輔助工具的變動 (maintain)。</li><li>revert : 撤銷回覆先前的 commit 例如：revert: type(scope): subject (回覆版本：xxxx)。</li></ul><p>加上前綴字之後一看就能先猜到在做什麼，之後再閱讀你改動的訊息就能更快進入狀況。</p></blockquote><h2 id="參考">參考</h2><ul><li><a href="https://wadehuanglearning.blogspot.com/2019/05/commit-commit-commit-why-what-commit.html">Git Commit Message 這樣寫會更好，替專案引入規範與範例</a></li></ul>]]></content>
+    <content type="html"><![CDATA[<p>top_img: images/default.png</p><h2 id="讓版控更加容易追蹤">讓版控更加容易追蹤 :</h2><blockquote><p>習慣上會將每個 commit 的內容盡量限縮在<strong>單一單元或一件事</strong>上，以讓你的 commit message 和異動處能夠簡潔的對應，對於自己或團隊成員在追蹤進度、回顧異動上都能提高效率。</p><p>在這之上能更快表達此次 commit 意義的做法，就是在 commit message 開頭加上<strong>前綴字</strong>，常見的有 :</p><ul><li>feat : 新增/修改功能 (feature)。</li><li>fix : 修補 bug (bug fix)。</li><li>docs : 文件 (documentation)。</li><li>style : 格式 (不影響程式碼運行的變動 white-space, formatting, missing semi colons, etc)。</li><li>refactor : 重構 (既不是新增功能，也不是修補 bug 的程式碼變動)。</li><li>perf : 改善效能 (A code change that improves performance)。</li><li>test : 增加測試 (when adding missing tests)。</li><li>chore : 建構程序或輔助工具的變動 (maintain)。</li><li>revert : 撤銷回覆先前的 commit 例如：revert: type(scope): subject (回覆版本：xxxx)。</li></ul><p>加上前綴字之後一看就能先猜到在做什麼，之後再閱讀你改動的訊息就能更快進入狀況。</p></blockquote><h2 id="參考">參考</h2><ul><li><a href="https://wadehuanglearning.blogspot.com/2019/05/commit-commit-commit-why-what-commit.html">Git Commit Message 這樣寫會更好，替專案引入規範與範例</a></li></ul>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/default.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    <summary type="html">&lt;p&gt;top_img: images/default.png&lt;/p&gt;
 &lt;h2 id=&quot;讓版控更加容易追蹤&quot;&gt;讓版控更加容易追蹤 :&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;習慣上會將每個 commit 的內容盡量限縮在&lt;strong&gt;單一單元或一件事&lt;/s</summary>
+&lt;p&gt;習慣上會將每個 commit 的內容盡量限縮在&lt;strong&gt;單一單元或一件事&lt;/strong&gt;上，以讓你</summary>
       
     
     
@@ -472,20 +472,19 @@
     <link href="https://koufuchi.github.io/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/"/>
     <id>https://koufuchi.github.io/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/</id>
     <published>2023-04-19T14:42:07.000Z</published>
-    <updated>2023-09-01T09:49:21.594Z</updated>
+    <updated>2023-09-01T09:53:40.577Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/default.png" alt=""></p><hr><aside>💡 適用於 mac os 且使用 Homebrew 管理 php 環境</aside><hr><h2 id="核心為以下兩行">核心為以下兩行 :</h2><pre><code class="language-bash">brew unlink php@7.3 brew link -f php@8.1</code></pre><h2 id="每次都要記很煩所以寫了個簡單-script">每次都要記很煩所以寫了個簡單 script :</h2><p><a href="https://github.com/Koufuchi/php_version_switcher">GitHub - Koufuchi/php_version_switcher</a></p><h2 id="用命令行移動到-script-所在目錄，執行以下語法並指定版本即可切換：">用命令行移動到 script 所在目錄，執行以下語法並指定版本即可切換：</h2><pre><code class="language-bash">. ~/ps.sh 7.3  # 檔名自己取，執行時後面餵版本參數，如果參數錯誤則會列出你本機安裝的所有版本</code></pre><h2 id="或是真的超懶，就在-zshrc-中加入">或是真的超懶，就在 ~/.zshrc 中加入 :</h2><pre><code class="language-bash">export PATH=&quot;$PATH:/&lt;your script path&gt;/&quot;  # script 所在目錄</code></pre><h2 id="之後打開-terminal-後就直接輸入以下就好">之後打開 terminal 後就直接輸入以下就好 :</h2><pre><code class="language-bash"> ps.sh 7.3 </code></pre><p>注意所有指令都會跑去你指定的目錄對，所以其實不太推薦這樣玩</p>]]></content>
+    <content type="html"><![CDATA[<aside>💡 適用於 mac os 且使用 Homebrew 管理 php 環境</aside><hr><h2 id="核心為以下兩行">核心為以下兩行 :</h2><pre><code class="language-bash">brew unlink php@7.3 brew link -f php@8.1</code></pre><h2 id="每次都要記很煩所以寫了個簡單-script">每次都要記很煩所以寫了個簡單 script :</h2><p><a href="https://github.com/Koufuchi/php_version_switcher">GitHub - Koufuchi/php_version_switcher</a></p><h2 id="用命令行移動到-script-所在目錄，執行以下語法並指定版本即可切換：">用命令行移動到 script 所在目錄，執行以下語法並指定版本即可切換：</h2><pre><code class="language-bash">. ~/ps.sh 7.3  # 檔名自己取，執行時後面餵版本參數，如果參數錯誤則會列出你本機安裝的所有版本</code></pre><h2 id="或是真的超懶，就在-zshrc-中加入">或是真的超懶，就在 ~/.zshrc 中加入 :</h2><pre><code class="language-bash">export PATH=&quot;$PATH:/&lt;your script path&gt;/&quot;  # script 所在目錄</code></pre><h2 id="之後打開-terminal-後就直接輸入以下就好">之後打開 terminal 後就直接輸入以下就好 :</h2><pre><code class="language-bash"> ps.sh 7.3 </code></pre><p>注意所有指令都會跑去你指定的目錄對，所以其實不太推薦這樣玩</p>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/default.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;hr&gt;
-&lt;aside&gt;
+    <summary type="html">&lt;aside&gt;
 💡 適用於 mac os 且使用 Homebrew 管理 php 環境
 &lt;/aside&gt;
 &lt;hr&gt;
-&lt;h2 id=&quot;核心為以下兩行&quot;&gt;核心為以下兩行 :&lt;/h2</summary>
+&lt;h2 id=&quot;核心為以下兩行&quot;&gt;核心為以下兩行 :&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;brew unlink php@</summary>
       
     
     
