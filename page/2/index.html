@@ -60,7 +60,7 @@ gtag('config', 'G-G4J5FGQF03');
   isHome: true,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2023-09-01 17:41:01'
+  postUpdate: '2023-09-01 17:48:05'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -206,7 +206,7 @@ gtag('config', 'G-G4J5FGQF03');
     document.addEventListener('pjax:complete', () => { preloader.endLoading() })
   }
 })()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">24</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">9</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('/images/default.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Koufuchi's blog"><img class="site-icon" src="/images/avatar.jpg"/><span class="site-name">Koufuchi's blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">Koufuchi's blog</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="https://github.com/koufuchi" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left"><a href="/2023/04/27/Codility/CodilityLessonMissingInteger/" title="Codility Lesson MissingInteger"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson MissingInteger"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/27/Codility/CodilityLessonMissingInteger/" title="Codility Lesson MissingInteger">Codility Lesson MissingInteger</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-27T12:35:52.000Z" title="Created 2023-04-27 20:35:52">2023-04-27</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
-# 題目：
+題目：
 官網題目連結
 
 根據題目敘述，會給一個由 N 個整數組成的陣列 A。需找出 A 中沒有出現且大於 0 的最小正整數。
@@ -218,7 +218,7 @@ N 是範圍 [1~100000] 的整數。
 陣列 A 裡的元素都是範圍 [−1000000~1000000] 的整數。
 
 
-# 解法：
+解法：
 
 第一時間還是想到了記憶法，先遍歷 A 記錄走過的不重複合法值，之後再遍歷記錄到的合法值來找出第一個 合法總數+1 的範圍內沒有記錄到的合法值。
 總覺得還有機會想出跟 MaxCounters 一樣將當前最小值與合法最小值分開存的方法，就不用分兩次遍歷，但目前仍未想到。
@@ -227,13 +227,13 @@ N 是範圍 [1~100000] 的整數。
 空間複雜度 O(N)
 
 
-# PHP 程式碼：
+PHP 程式碼：
 
 我的解答
 單元測試
 
 </div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/25/Codility/CodilityLessonMaxCounters/" title="Codility Lesson MaxCounters"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson MaxCounters"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/25/Codility/CodilityLessonMaxCounters/" title="Codility Lesson MaxCounters">Codility Lesson MaxCounters</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-25T15:03:41.000Z" title="Created 2023-04-25 23:03:41">2023-04-25</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
-# 題目：
+題目：
 官網題目連結
 
 根據題目敘述，會給一個由 N 個整數組成的陣列 A 以及一個整數 M，你必須照順序遍歷 A 並執行以下判斷，之後返回結果陣列 R (包含 M 個整數) :
@@ -248,8 +248,8 @@ N 是範圍 [1~100000] 的整數。
 當 K=2，A[K]=4，R[4-1] 要加 1，R 就變成 [0, 0, 1, 2, 0]
 當 K=3，A[K]=6，R[6-1] 等於 M+1，R 所有元素要等於當前最大元素 2，所以 R 就變成 [2, 2, 2, 2, 2]
 當 K=4，A[K]=1，R[1-1] 要加 1，R 就變成 [3, 2, 2, 2, 2]
-當 K=5，A[K]=4，R[4-1] 要 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2023/04/24/Codility/CodilityLessonPermCheck/" title="Codility Lesson PermCheck"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson PermCheck"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/24/Codility/CodilityLessonPermCheck/" title="Codility Lesson PermCheck">Codility Lesson PermCheck</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-24T12:59:03.000Z" title="Created 2023-04-24 20:59:03">2023-04-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
-# 題目：
+當 K=5，A[K]=4，R[4-1] 要加  ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2023/04/24/Codility/CodilityLessonPermCheck/" title="Codility Lesson PermCheck"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson PermCheck"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/24/Codility/CodilityLessonPermCheck/" title="Codility Lesson PermCheck">Codility Lesson PermCheck</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-24T12:59:03.000Z" title="Created 2023-04-24 20:59:03">2023-04-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
+題目：
 官網題目連結
 
 根據題目敘述，會給一個包含 N 個元素的非空陣列 A。你必須檢查 A 中是否包含所有 1~N 的整數值且不重複(其實這有點廢話，因為當滿足包含所有 1~N 的整數時本來就不可能有重複)
@@ -260,12 +260,12 @@ N 是範圍 [1~100000] 的整數。
 陣列 A 裡的所有元素都是範圍 [1~1000000000] 的整數
 
 
-# 解法：
+解法：
 
 這邊容易疏忽的點應該是並不保證餵進來的陣列其值都不重複，所以你不能用等差數列來解，依然需要紀錄走了哪些合法值，所以空間複雜度只能 O(N)。
 再來由於一樣要追求遍歷一次就做完，所以我們需要找到規律，能先檢查的就是當發生重複(也就是當前遍歷值是已記錄過得合法值)時可以直接回傳 0，也就表示如果成功遍歷完一次 A ，就能確保 A 是元素不重複的陣列，也就能確保當我們紀錄的不重複合法值陣列總數等同於其內部的最大元素值時，就代表符合需求。
-因為有點饒舌所以用範例說明，當輸入 A=[4,  ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/24/Codility/CodilityLessonFrogRiverOne/" title="Codility Lesson FrogRiverOne"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson FrogRiverOne"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/24/Codility/CodilityLessonFrogRiverOne/" title="Codility Lesson FrogRiverOne">Codility Lesson FrogRiverOne</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-24T12:23:10.000Z" title="Created 2023-04-24 20:23:10">2023-04-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
-# 題目：
+因為有點饒舌所以用範例說明，當輸入 A=[4, 1, 3 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/24/Codility/CodilityLessonFrogRiverOne/" title="Codility Lesson FrogRiverOne"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson FrogRiverOne"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/24/Codility/CodilityLessonFrogRiverOne/" title="Codility Lesson FrogRiverOne">Codility Lesson FrogRiverOne</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-24T12:23:10.000Z" title="Created 2023-04-24 20:23:10">2023-04-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
+題目：
 官網題目連結
 
 根據題目敘述，會給一個鍵為 N，值為 K 的非空陣列 A。其中 N 表示秒數，K 表示位置，也就是第 N 秒時會有樹葉掉落到位置 K 上。
@@ -278,7 +278,7 @@ N 是範圍 [1~100000] 的整數。
 陣列 A 裡的所有元素都是範圍 [1~X] 的整數
 
 
-# 解法：
+解法：
 
 這題不像 PermMissingElem 一樣可以用等差數列去減，因為樹葉掉落的位置可能會出現重複的，所以始終是必須記錄走過的不重複合法位置有哪些，空間複雜度最低只能 O(N)。
 而由於我們有紀錄走過的不重複合法位置，所以可以得知當你剛好找到第 X 個不重複合法值時，他的時間就會是答案，總共只需遍歷一次。
@@ -287,7 +287,7 @@ N 是範圍 [1~100000] 的整數。
 空間複雜度 O(N)
 
 
-# PHP 程式碼：
+PHP 程式碼：
 
 我的解答
 單元測試
@@ -298,43 +298,24 @@ N 是範圍 [1~100000] 的整數。
 💡 適用於 mac os 且使用 Homebrew 管理 php 環境
 
 
-# 核心為以下兩行 :
+核心為以下兩行 :
 brew unlink php@7.3 
 brew link -f php@8.1
 
-# 每次都要記很煩所以寫了個簡單 script :
+每次都要記很煩所以寫了個簡單 script :
 GitHub - Koufuchi/php_version_switcher
-# 用命令行移動到 script 所在目錄，執行以下語法並指定版本即可切換：
+用命令行移動到 script 所在目錄，執行以下語法並指定版本即可切換：
 . ~/ps.sh 7.3  # 檔名自己取，執行時後面餵版本參數，如果參數錯誤則會列出你本機安裝的所有版本
 
-# 或是真的超懶，就在 ~/.zshrc 中加入 :
+或是真的超懶，就在 ~/.zshrc 中加入 :
 export PATH=&quot;$PATH:/&lt;your script path&gt;/&quot;  # script 所在目錄
 
-# 之後打開 terminal 後就直接輸入以下就好 :
+之後打開 terminal 後就直接輸入以下就好 :
  ps.sh 7.3 
 
 注意所有指令都會跑去你指定的目錄對，所以其實不太推薦這樣玩
-</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/14/Codility/CodilityLessonPermMissingElem/" title="Codility Lesson PermMissingElem"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson PermMissingElem"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/14/Codility/CodilityLessonPermMissingElem/" title="Codility Lesson PermMissingElem">Codility Lesson PermMissingElem</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-14T11:25:12.000Z" title="Created 2023-04-14 19:25:12">2023-04-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
-# 題目：
-官網題目連結
-
-根據題目敘述，會給一個由 N 個不同整數組成的陣列 A。該陣列包含 [1~(N+1)] 範圍內的整數，這表示正好缺少一個 [1~(N+1)] 的元素，你必須找出他。
-例如輸入 A=[2, 3, 1, 5] ，答案應為 4。
-
-N 是範圍 [1~100000] 的整數。
-陣列 A 裡的元素都是不重複的。
-陣列 A 裡的元素都是範圍 [1~(N+1)] 的整數
-
-
-# 解法：
-
-也許你一開始會想到排序後遍歷，但排序需要 O(Nlog N)，所以顯然應該有更好的解法。
-再來也許會想到定義一個鍵為 1~(N+1) 的結果陣列，只要遍歷到就從結果陣列中刪除，那麼最後剩下的那個就是答案，這樣的時間複雜度似乎已達標，但是空間是否能用得更少呢?
-觀察題目可以發現 1~(N+1) 其實就是等差為 1 的等差數列，那麼我們其實一開始就可以預期他們的總和是多少了，只要用預期總和去減 A 的所有元素就能求解。
-這邊需要注意的是公式不要套錯，因為題目其實有少給你 1 個元素，所以正確的長度和高度應是 A 的元素數量再 +1。
-像這樣用公式解就能降低空間複雜度到 O(1)。
-雖然題目 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2023/04/14/Codility/CodilityLessonTapeEquilibrium/" title="Codility Lesson TapeEquilibrium"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson TapeEquilibrium"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/14/Codility/CodilityLessonTapeEquilibrium/" title="Codility Lesson TapeEquilibrium">Codility Lesson TapeEquilibrium</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-14T11:25:12.000Z" title="Created 2023-04-14 19:25:12">2023-04-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
-# 題目：
+</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/14/Codility/CodilityLessonTapeEquilibrium/" title="Codility Lesson TapeEquilibrium"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson TapeEquilibrium"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/14/Codility/CodilityLessonTapeEquilibrium/" title="Codility Lesson TapeEquilibrium">Codility Lesson TapeEquilibrium</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-14T11:25:12.000Z" title="Created 2023-04-14 19:25:12">2023-04-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
+題目：
 官網題目連結
 
 根據題目敘述，會給一個由 N 個不同整數組成的非空陣列 A。遍歷到 A 的任一非 0 索引 P 時，會將陣列分成 A[1], A[2],…, A[P−1] 以及 A[P]、A[P+1],…, A[N−1] 兩個部分，其差異指的就是這兩部分各自加總後相減的絕對值。
@@ -351,11 +332,30 @@ N 是範圍 [2~100000] 的整數。
 陣列 A 裡的元素都是範圍 [-1000~1000] 的整數
 
 
-# 解法：
+解法：
 
 這題敘述挺長的，有可能會一時不知道怎麼下手，但其實原則很簡單，就是一樣想辦法遍歷一次就做完。
-我們會發現從 P 到 P+1 時，相當於右邊減去 A ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/13/Codility/CodilityLessonFrogJmp/" title="Codility Lesson FrogJmp"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson FrogJmp"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/13/Codility/CodilityLessonFrogJmp/" title="Codility Lesson FrogJmp">Codility Lesson FrogJmp</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-13T11:30:55.000Z" title="Created 2023-04-13 19:30:55">2023-04-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
-# 題目：
+我們會發現從 P 到 P+1 時，相當於右邊減去 A[P]， ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2023/04/14/Codility/CodilityLessonPermMissingElem/" title="Codility Lesson PermMissingElem"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson PermMissingElem"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/14/Codility/CodilityLessonPermMissingElem/" title="Codility Lesson PermMissingElem">Codility Lesson PermMissingElem</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-14T11:25:12.000Z" title="Created 2023-04-14 19:25:12">2023-04-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
+題目：
+官網題目連結
+
+根據題目敘述，會給一個由 N 個不同整數組成的陣列 A。該陣列包含 [1~(N+1)] 範圍內的整數，這表示正好缺少一個 [1~(N+1)] 的元素，你必須找出他。
+例如輸入 A=[2, 3, 1, 5] ，答案應為 4。
+
+N 是範圍 [1~100000] 的整數。
+陣列 A 裡的元素都是不重複的。
+陣列 A 裡的元素都是範圍 [1~(N+1)] 的整數
+
+
+解法：
+
+也許你一開始會想到排序後遍歷，但排序需要 O(Nlog N)，所以顯然應該有更好的解法。
+再來也許會想到定義一個鍵為 1~(N+1) 的結果陣列，只要遍歷到就從結果陣列中刪除，那麼最後剩下的那個就是答案，這樣的時間複雜度似乎已達標，但是空間是否能用得更少呢?
+觀察題目可以發現 1~(N+1) 其實就是等差為 1 的等差數列，那麼我們其實一開始就可以預期他們的總和是多少了，只要用預期總和去減 A 的所有元素就能求解。
+這邊需要注意的是公式不要套錯，因為題目其實有少給你 1 個元素，所以正確的長度和高度應是 A 的元素數量再 +1。
+像這樣用公式解就能降低空間複雜度到 O(1)。
+雖然題目主旨是時 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/13/Codility/CodilityLessonFrogJmp/" title="Codility Lesson FrogJmp"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson FrogJmp"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/13/Codility/CodilityLessonFrogJmp/" title="Codility Lesson FrogJmp">Codility Lesson FrogJmp</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-13T11:30:55.000Z" title="Created 2023-04-13 19:30:55">2023-04-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
+題目：
 官網題目連結
 
 根據題目敘述，會給三個變數，起點是 X，終點是 Y，每次移動距離是 D，需求出最少需要幾次 D 才能剛好抵達或超過終點。
@@ -366,7 +366,7 @@ X, Y, D 都是範圍 [1~1000000000] 的整數。
 X &lt;= Y。
 
 
-# 解法：
+解法：
 
 既然題目都歸類在 TimeComplexity 裡了，感覺就是注重效能的題目。
 實際上也沒錯，看起來就是想騙人去用迴圈去每次減 D，因為這樣在 D 為 1 的時候你的時間複雜度就會提高到 Y-X。
@@ -378,13 +378,13 @@ X &lt;= Y。
 空間複雜度 O(1)
 
 
-# PHP 程式碼：
+PHP 程式碼：
 
 我的解答
 單元測試
 
 </div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2023/04/12/Codility/CodilityLessonOddOccurrencesInArray/" title="Codility Lesson OddOccurrencesInArray"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson OddOccurrencesInArray"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/12/Codility/CodilityLessonOddOccurrencesInArray/" title="Codility Lesson OddOccurrencesInArray">Codility Lesson OddOccurrencesInArray</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-12T12:05:32.000Z" title="Created 2023-04-12 20:05:32">2023-04-12</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
-# 題目：
+題目：
 官網題目連結
 
 根據題目敘述，會給一個非空陣列 A，包含了 N 個整數，索引從 0 開始。N 為奇數，其中除了唯一一個元素之外，其他每個元素都可以與陣列中另一個有相同值的元素配對，目的就是找出這個無法配對的元素。
@@ -394,13 +394,13 @@ N 為範圍 [1~1000000] 的奇數。
 陣列 A 的每個元素都是 [1~1000000000] 範圍內的整數。
 
 
-# 解法：
+解法：
 
 光看題目第一時間其實想到 LeetCode 的 20. Valid Parentheses，那時是用 stack 解的，不過這題並沒有那麼複雜，不需要考慮開關符號的問題。
 再來會想到的是記憶法，用數字種類當索引，用出現次數當值。當初會這樣想是因為題目的範例暗示了同個數字是可以出現超過 2 次的，於是潛意識想要知道每種數字出現幾次，這樣的優點是可以在時間和複雜度 O(N) 的情況下獲得完整資訊。
 寫到一半才想到，目的只是要回傳那個沒有重複的值啊，我多做那麼沒用的事情幹嘛!
-於是目標會希望改成只對 A 遍歷 1 次，且減少空間的用量，這時候就會發現我並不需要 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/11/Codility/CodilityLessonCyclicRotation/" title="Codility Lesson CyclicRotation"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson CyclicRotation"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/11/Codility/CodilityLessonCyclicRotation/" title="Codility Lesson CyclicRotation">Codility Lesson CyclicRotation</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-11T12:32:12.000Z" title="Created 2023-04-11 20:32:12">2023-04-11</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
-# 題目：
+於是目標會希望改成只對 A 遍歷 1 次，且減少空間的用量，這時候就會發現我並不需要紀錄每種 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/11/Codility/CodilityLessonCyclicRotation/" title="Codility Lesson CyclicRotation"><img class="post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Codility Lesson CyclicRotation"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/11/Codility/CodilityLessonCyclicRotation/" title="Codility Lesson CyclicRotation">Codility Lesson CyclicRotation</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2023-04-11T12:32:12.000Z" title="Created 2023-04-11 20:32:12">2023-04-11</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Codility/">Codility</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/PHP/">PHP</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/">演算法</a><span class="article-meta-link">•</span><a class="article-meta__tags" href="/tags/Codility/">Codility</a></span></div><div class="content">
+題目：
 官網題目連結
 
 根據題目敘述，輸入整數陣列 A 和一個整數 K ，將每個陣列元素往右移 K 次。
@@ -411,7 +411,7 @@ N 和 K 都是範圍 [0~100] 的整數。
 
 題目特別說專注在正確性而不是效能。
 
-# 解法：
+解法：
 
 共做 K 次，每次將陣列的最後一個元素改放到最前面即可。
 由於 php array 的特性，用 array_pop() 取出最後一個元素為時間複雜度 O(1)，
@@ -422,7 +422,7 @@ N 和 K 都是範圍 [0~100] 的整數。
 空間複雜度 O(N) / O(N * K) – 我不確定重複的 array_unshift() 會不會用到相同的空間來搬移陣列，之後可以實驗
 
 
-# PHP 程式碼：
+PHP 程式碼：
 
 我的解答
 單元測試
@@ -434,7 +434,7 @@ N 和 K 都是範圍 [0~100] 的整數。
             </div>
             <ul class="card-category-list" id="aside-cat-list">
             <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Codility/"><span class="card-category-list-name">Codility</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/LeetCode/"><span class="card-category-list-name">LeetCode</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Linux/"><span class="card-category-list-name">Linux</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/PHP/"><span class="card-category-list-name">PHP</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Postman/"><span class="card-category-list-name">Postman</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/git/"><span class="card-category-list-name">git</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%BF%AB%E5%8F%96/"><span class="card-category-list-name">快取</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/"><span class="card-category-list-name">第三方工具</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E8%87%AA%E8%A3%BD%E5%B7%A5%E5%85%B7/"><span class="card-category-list-name">自製工具</span><span class="card-category-list-count">1</span></a></li>
-            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>Tags</span></div><div class="card-tag-cloud"><a href="/tags/Cache/" style="font-size: 1.21em; color: #999ea4">Cache</a> <a href="/tags/LeetCode/" style="font-size: 1.27em; color: #99a0a9">LeetCode</a> <a href="/tags/Homebrew/" style="font-size: 1.1em; color: #999">Homebrew</a> <a href="/tags/Consistency/" style="font-size: 1.16em; color: #999b9e">Consistency</a> <a href="/tags/JavaScript/" style="font-size: 1.1em; color: #999">JavaScript</a> <a href="/tags/PHP/" style="font-size: 1.5em; color: #99a9bf">PHP</a> <a href="/tags/style/" style="font-size: 1.1em; color: #999">style</a> <a href="/tags/Shell/" style="font-size: 1.1em; color: #999">Shell</a> <a href="/tags/Codility/" style="font-size: 1.39em; color: #99a4b4">Codility</a> <a href="/tags/Blind75/" style="font-size: 1.27em; color: #99a0a9">Blind75</a> <a href="/tags/systemd/" style="font-size: 1.1em; color: #999">systemd</a> <a href="/tags/git/" style="font-size: 1.1em; color: #999">git</a> <a href="/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/" style="font-size: 1.16em; color: #999b9e">系統架構</a> <a href="/tags/macOS/" style="font-size: 1.1em; color: #999">macOS</a> <a href="/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/" style="font-size: 1.1em; color: #999">計算機組織</a> <a href="/tags/HashTable/" style="font-size: 1.33em; color: #99a2af">HashTable</a> <a href="/tags/Message-queue/" style="font-size: 1.1em; color: #999">Message queue</a> <a href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/" style="font-size: 1.44em; color: #99a7ba">演算法</a> <a href="/tags/Postman/" style="font-size: 1.1em; color: #999">Postman</a> <a href="/tags/%E8%87%AA%E5%8B%95%E5%8C%96%E6%B8%AC%E8%A9%A6/" style="font-size: 1.1em; color: #999">自動化測試</a> <a href="/tags/Linux/" style="font-size: 1.1em; color: #999">Linux</a> <a href="/tags/Array/" style="font-size: 1.33em; color: #99a2af">Array</a> <a href="/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/" style="font-size: 1.1em; color: #999">第三方工具</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/05/"><span class="card-archive-list-date">May 2023</span><span class="card-archive-list-count">7</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/04/"><span class="card-archive-list-date">April 2023</span><span class="card-archive-list-count">14</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/01/"><span class="card-archive-list-date">January 2023</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/10/"><span class="card-archive-list-date">October 2022</span><span class="card-archive-list-count">1</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article :</div><div class="item-count">23</div></div><div class="webinfo-item"><div class="item-name">UV :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">PV :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Push :</div><div class="item-count" id="last-push-date" data-lastPushDate="2023-09-01T09:41:01.669Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background: #0d0d0d"><div id="footer-wrap"><div class="copyright">&copy;2023 By Koufuchi</div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://koufuchi.com/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script>function panguFn () {
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>Tags</span></div><div class="card-tag-cloud"><a href="/tags/Postman/" style="font-size: 1.1em; color: #999">Postman</a> <a href="/tags/LeetCode/" style="font-size: 1.27em; color: #99a0a9">LeetCode</a> <a href="/tags/Cache/" style="font-size: 1.21em; color: #999ea4">Cache</a> <a href="/tags/Shell/" style="font-size: 1.1em; color: #999">Shell</a> <a href="/tags/Linux/" style="font-size: 1.1em; color: #999">Linux</a> <a href="/tags/macOS/" style="font-size: 1.1em; color: #999">macOS</a> <a href="/tags/git/" style="font-size: 1.1em; color: #999">git</a> <a href="/tags/JavaScript/" style="font-size: 1.1em; color: #999">JavaScript</a> <a href="/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/" style="font-size: 1.1em; color: #999">第三方工具</a> <a href="/tags/Blind75/" style="font-size: 1.27em; color: #99a0a9">Blind75</a> <a href="/tags/PHP/" style="font-size: 1.5em; color: #99a9bf">PHP</a> <a href="/tags/HashTable/" style="font-size: 1.33em; color: #99a2af">HashTable</a> <a href="/tags/Consistency/" style="font-size: 1.16em; color: #999b9e">Consistency</a> <a href="/tags/Codility/" style="font-size: 1.39em; color: #99a4b4">Codility</a> <a href="/tags/Message-queue/" style="font-size: 1.1em; color: #999">Message queue</a> <a href="/tags/Homebrew/" style="font-size: 1.1em; color: #999">Homebrew</a> <a href="/tags/Array/" style="font-size: 1.33em; color: #99a2af">Array</a> <a href="/tags/%E6%BC%94%E7%AE%97%E6%B3%95/" style="font-size: 1.44em; color: #99a7ba">演算法</a> <a href="/tags/style/" style="font-size: 1.1em; color: #999">style</a> <a href="/tags/%E8%87%AA%E5%8B%95%E5%8C%96%E6%B8%AC%E8%A9%A6/" style="font-size: 1.1em; color: #999">自動化測試</a> <a href="/tags/systemd/" style="font-size: 1.1em; color: #999">systemd</a> <a href="/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/" style="font-size: 1.16em; color: #999b9e">系統架構</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/" style="font-size: 1.1em; color: #999">計算機組織</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/05/"><span class="card-archive-list-date">May 2023</span><span class="card-archive-list-count">7</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/04/"><span class="card-archive-list-date">April 2023</span><span class="card-archive-list-count">14</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/01/"><span class="card-archive-list-date">January 2023</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/10/"><span class="card-archive-list-date">October 2022</span><span class="card-archive-list-count">1</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article :</div><div class="item-count">23</div></div><div class="webinfo-item"><div class="item-name">UV :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">PV :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Push :</div><div class="item-count" id="last-push-date" data-lastPushDate="2023-09-01T09:48:05.115Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background: #0d0d0d"><div id="footer-wrap"><div class="copyright">&copy;2023 By Koufuchi</div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://koufuchi.com/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script>function panguFn () {
   if (typeof pangu === 'object') pangu.autoSpacingPage()
   else {
     getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
