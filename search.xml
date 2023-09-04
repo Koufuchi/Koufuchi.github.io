@@ -4,6 +4,37 @@
   
     
     <entry>
+      <title>快取的一致性難題與架構模式 (下)</title>
+      <link href="/2023/09/03/Cache/CacheConsistencyMeta/"/>
+      <url>/2023/09/03/Cache/CacheConsistencyMeta/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Meta-是怎麼做的？">Meta 是怎麼做的？</h2><blockquote><ul><li>讀：和 Read aside 一樣。先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：先寫回 DB，接著清掉 Cache</li></ul><p>讀寫和 Read aside 一樣，但對 Cache 的操作採用版本控制及 Polaris 系統實作</p></blockquote><h2 id="版本控制">版本控制 :</h2><blockquote><p>所有對 Cache 寫入的請求字段要附加版本資訊</p><pre><code> # 依收到請求的時間排序 SET x=1 @VERSION=1  SET x=12345 @VERSION=3 (先到，所以先寫入)  SET x=45678 @VERSION=2 (無效，因為剛剛已經先寫版本3了，所以版本2比較低視為無效） </code></pre><p>缺點：若在 v2 的請求到達之前 v3 的資料就先被清除，v2 就會被成功寫入</p></blockquote><h2 id="Polaris">Polaris :</h2><blockquote><p>是一個基於 Multi-Paxos 演算法實作的系統。</p><p><img src="/images/polaris.webp" alt=""></p><p>Polaris 是獨立的監控服務。<br>如上圖，當 DB 某資料更新成 x=4 後，會發請求告訴所有 Cache “x=4 @version 4” 的失效事件(invalidation event)，表示跟 “x=4 @version 4” 不同的快取已失效，而這時 Polaris 會和其他 Cache 一起收到同樣的請求。</p><p>接著，Polaris 會去查詢其他 Cache 以便確認他們是否已經更新完成。</p><p>假如其中一台 Cache 返回 “x=3 @version 3”， 則 Polaris 會將這台 Cache 標記為不一致，並將這次檢查重新排隊，以便待會再重新檢查一次。<br>有個特別的地方在於 Polaris 的不一致回報會有 1, 5, 10分鐘內的不同時間尺度，當發現某個 cache 持續 1 分鐘以上不一致後，Polaris 會將此報告歸類為 5 分鐘內的不一致。</p><p>以 Polaris 的角度來看，當收到不一致的回報時，可能會有不同的情況，例如：<br>Polaris 收到 “x=4 @version 4” 的失效事件，但是當它查詢 Cache A 時，A 的回覆是 “x” 不存在 。</p><ul><li>狀況1： x 的 v3 是不可視(invisible)，而 v4 是對 x 的最新寫入，所以 Cache A 為不一致。</li><li>狀況2：x 的 v5 是刪除 x，所以 Polaris 在 v4 還沒檢查完的情況下，Cache A 就已經同步了 v5， 但並不是不一致。</li></ul><p>由於兩種狀況互斥，必須查詢 DB 才能區分是狀況1還是狀況2，但是對 DB 的操作成本是非常高的，所以這時候 Polaris 的時間尺度設計就派上用場。<br>由於真正的緩存不一致和對同一鍵的競速寫操作很少見，對 Cache 重新多做幾次確認就能過濾掉並非真正不一致的情況，而可以彈性設定成例如當 5 分鐘內都還是有不一致的狀況時，才對 DB 做查詢。</p><p>根據官方使用Polaris 監測的數據，有 99.99999999% 的緩存寫入一致性，也就是每 100 億次緩存寫入中只有 1 次出現不一致。</p></blockquote><h2 id="小結">小結 :</h2><blockquote><p>Meta 的部落格講了很多架構原理，也因此更能感受到一個高可用性的系統是如何的複雜且高成本，以一般小公司來說可能簡單的 Read Aside 就永遠不會遇到不一致的狀況了，所以終歸是需要依照尖峰的 QPS 和系統能力來判斷是否需要更進一步的拓展，這也是工程師經驗的價值所在。</p></blockquote><h2 id="參考">參考 :</h2><ul><li><a href="https://engineering.fb.com/2022/06/08/core-data/cache-invalidation/">官方技術部落格 Cache made consistent</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 快取 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cache </tag>
+            
+            <tag> 系統架構 </tag>
+            
+            <tag> MySQL </tag>
+            
+            <tag> Consistency </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>快取的一致性難題與架構模式 (中)</title>
       <link href="/2023/05/07/Cache/CacheConsistencyCanal/"/>
       <url>/2023/05/07/Cache/CacheConsistencyCanal/</url>
@@ -24,9 +55,9 @@
             
             <tag> 系統架構 </tag>
             
-            <tag> Consistency </tag>
-            
             <tag> MySQL </tag>
+            
+            <tag> Consistency </tag>
             
         </tags>
       
@@ -53,13 +84,13 @@
             
             <tag> Cache </tag>
             
-            <tag> 計算機組織 </tag>
-            
             <tag> 系統架構 </tag>
             
-            <tag> Message queue </tag>
-            
             <tag> Consistency </tag>
+            
+            <tag> 計算機組織 </tag>
+            
+            <tag> Message queue </tag>
             
         </tags>
       

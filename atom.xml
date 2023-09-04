@@ -6,7 +6,7 @@
   <link href="https://koufuchi.github.io/atom.xml" rel="self"/>
   
   <link href="https://koufuchi.github.io/"/>
-  <updated>2023-09-01T10:16:28.697Z</updated>
+  <updated>2023-09-04T10:07:35.997Z</updated>
   <id>https://koufuchi.github.io/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>快取的一致性難題與架構模式 (下)</title>
+    <link href="https://koufuchi.github.io/2023/09/03/Cache/CacheConsistencyMeta/"/>
+    <id>https://koufuchi.github.io/2023/09/03/Cache/CacheConsistencyMeta/</id>
+    <published>2023-09-03T15:38:54.000Z</published>
+    <updated>2023-09-04T10:07:35.997Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Meta-是怎麼做的？">Meta 是怎麼做的？</h2><blockquote><ul><li>讀：和 Read aside 一樣。先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：先寫回 DB，接著清掉 Cache</li></ul><p>讀寫和 Read aside 一樣，但對 Cache 的操作採用版本控制及 Polaris 系統實作</p></blockquote><h2 id="版本控制">版本控制 :</h2><blockquote><p>所有對 Cache 寫入的請求字段要附加版本資訊</p><pre><code> # 依收到請求的時間排序 SET x=1 @VERSION=1  SET x=12345 @VERSION=3 (先到，所以先寫入)  SET x=45678 @VERSION=2 (無效，因為剛剛已經先寫版本3了，所以版本2比較低視為無效） </code></pre><p>缺點：若在 v2 的請求到達之前 v3 的資料就先被清除，v2 就會被成功寫入</p></blockquote><h2 id="Polaris">Polaris :</h2><blockquote><p>是一個基於 Multi-Paxos 演算法實作的系統。</p><p><img src="/images/polaris.webp" alt=""></p><p>Polaris 是獨立的監控服務。<br>如上圖，當 DB 某資料更新成 x=4 後，會發請求告訴所有 Cache “x=4 @version 4” 的失效事件(invalidation event)，表示跟 “x=4 @version 4” 不同的快取已失效，而這時 Polaris 會和其他 Cache 一起收到同樣的請求。</p><p>接著，Polaris 會去查詢其他 Cache 以便確認他們是否已經更新完成。</p><p>假如其中一台 Cache 返回 “x=3 @version 3”， 則 Polaris 會將這台 Cache 標記為不一致，並將這次檢查重新排隊，以便待會再重新檢查一次。<br>有個特別的地方在於 Polaris 的不一致回報會有 1, 5, 10分鐘內的不同時間尺度，當發現某個 cache 持續 1 分鐘以上不一致後，Polaris 會將此報告歸類為 5 分鐘內的不一致。</p><p>以 Polaris 的角度來看，當收到不一致的回報時，可能會有不同的情況，例如：<br>Polaris 收到 “x=4 @version 4” 的失效事件，但是當它查詢 Cache A 時，A 的回覆是 “x” 不存在 。</p><ul><li>狀況1： x 的 v3 是不可視(invisible)，而 v4 是對 x 的最新寫入，所以 Cache A 為不一致。</li><li>狀況2：x 的 v5 是刪除 x，所以 Polaris 在 v4 還沒檢查完的情況下，Cache A 就已經同步了 v5， 但並不是不一致。</li></ul><p>由於兩種狀況互斥，必須查詢 DB 才能區分是狀況1還是狀況2，但是對 DB 的操作成本是非常高的，所以這時候 Polaris 的時間尺度設計就派上用場。<br>由於真正的緩存不一致和對同一鍵的競速寫操作很少見，對 Cache 重新多做幾次確認就能過濾掉並非真正不一致的情況，而可以彈性設定成例如當 5 分鐘內都還是有不一致的狀況時，才對 DB 做查詢。</p><p>根據官方使用Polaris 監測的數據，有 99.99999999% 的緩存寫入一致性，也就是每 100 億次緩存寫入中只有 1 次出現不一致。</p></blockquote><h2 id="小結">小結 :</h2><blockquote><p>Meta 的部落格講了很多架構原理，也因此更能感受到一個高可用性的系統是如何的複雜且高成本，以一般小公司來說可能簡單的 Read Aside 就永遠不會遇到不一致的狀況了，所以終歸是需要依照尖峰的 QPS 和系統能力來判斷是否需要更進一步的拓展，這也是工程師經驗的價值所在。</p></blockquote><h2 id="參考">參考 :</h2><ul><li><a href="https://engineering.fb.com/2022/06/08/core-data/cache-invalidation/">官方技術部落格 Cache made consistent</a></li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;Meta-是怎麼做的？&quot;&gt;Meta 是怎麼做的？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;讀：和 Read aside 一樣。先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。&lt;/li&gt;
+&lt;li&gt;寫：先寫回 DB，接著清掉 C</summary>
+      
+    
+    
+    
+    <category term="快取" scheme="https://koufuchi.github.io/categories/%E5%BF%AB%E5%8F%96/"/>
+    
+    
+    <category term="Cache" scheme="https://koufuchi.github.io/tags/Cache/"/>
+    
+    <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
+    
+    <category term="MySQL" scheme="https://koufuchi.github.io/tags/MySQL/"/>
+    
+    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
+    
+  </entry>
   
   <entry>
     <title>快取的一致性難題與架構模式 (中)</title>
@@ -44,9 +78,9 @@
     
     <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
-    
     <category term="MySQL" scheme="https://koufuchi.github.io/tags/MySQL/"/>
+    
+    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
     
   </entry>
   
@@ -74,13 +108,13 @@
     
     <category term="Cache" scheme="https://koufuchi.github.io/tags/Cache/"/>
     
-    <category term="計算機組織" scheme="https://koufuchi.github.io/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/"/>
-    
     <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="Message queue" scheme="https://koufuchi.github.io/tags/Message-queue/"/>
-    
     <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
+    
+    <category term="計算機組織" scheme="https://koufuchi.github.io/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/"/>
+    
+    <category term="Message queue" scheme="https://koufuchi.github.io/tags/Message-queue/"/>
     
   </entry>
   
@@ -613,37 +647,6 @@
     <summary type="html">&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://app.codility.com/programmers/lessons/2-arrays/odd_occurrences_in_array/&quot;&gt;官網題目連結&lt;/a&gt;&lt;/p&gt;
 &lt;blockquot</summary>
-      
-    
-    
-    
-    <category term="Codility" scheme="https://koufuchi.github.io/categories/Codility/"/>
-    
-    
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
-    
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
-    
-    <category term="Codility" scheme="https://koufuchi.github.io/tags/Codility/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Codility Lesson CyclicRotation</title>
-    <link href="https://koufuchi.github.io/2023/04/11/Codility/CodilityLessonCyclicRotation/"/>
-    <id>https://koufuchi.github.io/2023/04/11/Codility/CodilityLessonCyclicRotation/</id>
-    <published>2023-04-11T12:32:12.000Z</published>
-    <updated>2023-09-01T10:18:49.107Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="題目：">題目：</h2><p><a href="https://app.codility.com/programmers/lessons/2-arrays/cyclic_rotation/">官網題目連結</a></p><blockquote><p>根據題目敘述，輸入整數陣列 A 和一個整數 K ，將<strong>每個</strong>陣列元素<strong>往右移</strong> K 次。<br>例如輸入 A=[3, 8, 9, 7, 6], K=3，答案應為 [9, 7, 6, 3, 8]。</p><ul><li>N 和 K 都是範圍 [0~100] 的整數。</li><li>陣列 A 的每個元素都是 [−1000~1000] 範圍內的整數。</li></ul><p>題目特別說專注在正確性而不是效能。</p></blockquote><h2 id="解法：">解法：</h2><blockquote><p>共做 K 次，每次將陣列的最後一個元素改放到最前面即可。</p><p>由於 php array 的特性，用 array_pop() 取出最後一個元素為時間複雜度 O(1)，<br>但使用 array_unshift() 將元素放到最前面時，需要時間複雜度 O(N) 來保持索引順序，其中 N 為陣列元素數量。<br>可以複習一下我的另一篇文章 : <a href="/2022/10/19/PHPArray/">PHP Array</a></p><ul><li>時間複雜度 O(N * K)</li><li>空間複雜度 O(N) / O(N * K) – 我不確定重複的 array_unshift() 會不會用到相同的空間來搬移陣列，之後可以實驗</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/app/Codility/Lessons/Arrays/CyclicRotation.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/tests/Unit/Codility/Lessons/Arrays/CyclicRotationTest.php">單元測試</a></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
-&lt;p&gt;&lt;a href=&quot;https://app.codility.com/programmers/lessons/2-arrays/cyclic_rotation/&quot;&gt;官網題目連結&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;根據題</summary>
       
     
     
