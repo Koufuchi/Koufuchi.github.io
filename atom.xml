@@ -89,16 +89,17 @@
     <link href="https://koufuchi.github.io/2023/05/05/LeetCode/GroupAnagrams/"/>
     <id>https://koufuchi.github.io/2023/05/05/LeetCode/GroupAnagrams/</id>
     <published>2023-05-05T14:35:31.000Z</published>
-    <updated>2023-09-01T09:49:21.595Z</updated>
+    <updated>2023-09-04T01:43:49.788Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/leetCode.png" alt=""></p><h2 id="題目：">題目：</h2><p><a href="https://leetcode.com/problems/group-anagrams/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給定一個字串陣列 strs，需要把每個字串依據 anagram 做分類放進不同的陣列後回傳。<br>相同 anagram 定義 : 若字串 s 的字元出現頻率與字串 t 相同，則他們為同一個 anagram。</p><p>例如輸入 strs=[“eat”,“tea”,“tan”,“ate”,“nat”,“bat”]，應回傳 [[“bat”],[“nat”,“tan”],[“ate”,“eat”,“tea”]]，不看順序。</p><ul><li>1 &lt;= strs.length &lt;= 10^4</li><li>0 &lt;= strs[i].length &lt;= 100</li><li>strs 裡的每個字串都只由小寫英文字組成</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>原本想到的作法是每個字串做一個<strong>字符出現次數表</strong>，但這樣的時間複雜度就會變成「字串總數 * (每個字串的最大長度 * 當下有的出現次數表(最大等於字串總數) * 當下有的出現次數表最大長度)，光看就不可行。</p><p>後來想說既然存出現次數陣列沒比較快，那就改成<strong>存排序後的不重複字串</strong>，也就是對每個字串做排序後去比較我們存過的不重複字串，時間複雜度會變成「字串總數 * 最大字串排序的時間複雜度」。而因為基本上排序演算法最快也要 O(MlogM)，所以當字串總數 N 且最大字串長度 M 時，時間複雜度會是 O(N * MlogM)。</p><p>最後是參考別人的答案 : 方法一之所以慢是因為你沒有辦法在 O(K) 的時間複雜度內找到他是否有符合已找過的 K 個 anagram 種類之一，而方法二雖然成功讓其降到 O(K)，卻因為需要做排序導致變成 O(MlogM)，所以最後這個方法三就是讓你不需排序也能達到 O(K) 甚至更快。</p><p>具體來說，我們可以發現題目確保每個字串都是小寫字母，也就是說他們本來就有順序的關係性在，由於 a 的 ASCII 值是 97，而 b 是 98，以此類推到 z，所以可以將每個小寫字母(a~z)減去 a 的值當作索引，剛好就會是索引從 0 開始排到 25 的陣列，你就可以用這個陣列當作有序的字符出現次數表，之後將這個陣列轉成字串當作陣列索引，你就能在 O(1) 的時間複雜度內找到他是否有符合已找過的 anagram 種類之一。</p><p>需要注意的陷阱是每個字母出現的次數有可能超過十位數，就代表如果你將陣列轉成字串的作法是直接把次數串在一起就會錯，例如下圖的第二個範例 :</p><p><img src="/images/GroupAnagramsExample1.jpg" alt=""></p><p>所以說我們在串聯時可以加上特殊標記來區分，例如 :</p><p><img src="/images/GroupAnagramsExample2.jpg" alt=""></p><p>這樣就不會搞混了。</p><ul><li>時間複雜度 O(N * M)，N 為字串總數，M 為最大字串長度</li><li>空間複雜度 O(N)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/app/LeetCode/Blind75/Array/GroupAnagrams.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/tests/Unit/LeetCode/Blind75/Array/GroupAnagramsTest.php">單元測試</a></li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="題目：">題目：</h2><p><a href="https://leetcode.com/problems/group-anagrams/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給定一個字串陣列 strs，需要把每個字串依據 anagram 做分類放進不同的陣列後回傳。<br>相同 anagram 定義 : 若字串 s 的字元出現頻率與字串 t 相同，則他們為同一個 anagram。</p><p>例如輸入 strs=[“eat”,“tea”,“tan”,“ate”,“nat”,“bat”]，應回傳 [[“bat”],[“nat”,“tan”],[“ate”,“eat”,“tea”]]，不看順序。</p><ul><li>1 &lt;= strs.length &lt;= 10^4</li><li>0 &lt;= strs[i].length &lt;= 100</li><li>strs 裡的每個字串都只由小寫英文字組成</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>原本想到的作法是每個字串做一個<strong>字符出現次數表</strong>，但這樣的時間複雜度就會變成「字串總數 * (每個字串的最大長度 * 當下有的出現次數表(最大等於字串總數) * 當下有的出現次數表最大長度)，光看就不可行。</p><p>後來想說既然存出現次數陣列沒比較快，那就改成<strong>存排序後的不重複字串</strong>，也就是對每個字串做排序後去比較我們存過的不重複字串，時間複雜度會變成「字串總數 * 最大字串排序的時間複雜度」。而因為基本上排序演算法最快也要 O(MlogM)，所以當字串總數 N 且最大字串長度 M 時，時間複雜度會是 O(N * MlogM)。</p><p>最後是參考別人的答案 : 方法一之所以慢是因為你沒有辦法在 O(K) 的時間複雜度內找到他是否有符合已找過的 K 個 anagram 種類之一，而方法二雖然成功讓其降到 O(K)，卻因為需要做排序導致變成 O(MlogM)，所以最後這個方法三就是讓你不需排序也能達到 O(K) 甚至更快。</p><p>具體來說，我們可以發現題目確保每個字串都是小寫字母，也就是說他們本來就有順序的關係性在，由於 a 的 ASCII 值是 97，而 b 是 98，以此類推到 z，所以可以將每個小寫字母(a~z)減去 a 的值當作索引，剛好就會是索引從 0 開始排到 25 的陣列，你就可以用這個陣列當作有序的字符出現次數表，之後將這個陣列轉成字串當作陣列索引，你就能在 O(1) 的時間複雜度內找到他是否有符合已找過的 anagram 種類之一。</p><p>需要注意的陷阱是每個字母出現的次數有可能超過十位數，就代表如果你將陣列轉成字串的作法是直接把次數串在一起就會錯，例如下圖的第二個範例 :</p><p><img src="/images/GroupAnagramsExample1.jpg" alt=""></p><p>所以說我們在串聯時可以加上特殊標記來區分，例如 :</p><p><img src="/images/GroupAnagramsExample2.jpg" alt=""></p><p>這樣就不會搞混了。</p><ul><li>時間複雜度 O(N * M)，N 為字串總數，M 為最大字串長度</li><li>空間複雜度 O(N)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/app/LeetCode/Blind75/Array/GroupAnagrams.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/tests/Unit/LeetCode/Blind75/Array/GroupAnagramsTest.php">單元測試</a></li></ul>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/leetCode.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
-&lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/group-anagrams/&quot;&gt;官網題目連結&lt;/a&gt;&lt;/</summary>
+    <summary type="html">&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/group-anagrams/&quot;&gt;官網題目連結&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;根據題目敘述，會給定一個字串陣列 strs，需要把每個字</summary>
       
     
     
@@ -125,16 +126,17 @@
     <link href="https://koufuchi.github.io/2023/05/03/LeetCode/ValidAnagram/"/>
     <id>https://koufuchi.github.io/2023/05/03/LeetCode/ValidAnagram/</id>
     <published>2023-05-03T13:48:38.000Z</published>
-    <updated>2023-09-01T09:49:21.595Z</updated>
+    <updated>2023-09-04T01:43:49.789Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/leetCode.png" alt=""></p><h2 id="題目：">題目：</h2><p><a href="https://leetcode.com/problems/valid-anagram/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給定兩個字串 s 和 t，你必須判斷 s 是不是 t 的 anagram，若是則回傳 true，不是則回傳 false。</p><p>s 必須符合以下兩個條件才能算是 t 的 anagram :</p><ol><li>s 和 t 字串長度相同</li><li>s 和 t 有相同的字元數且各字元出現次數相同</li></ol><p>例如輸入 s = “anagram”, t = “nagaram”，應回傳 true。<br>輸入 s = “rat”, t = “car”，則回傳 false</p><ul><li>1 &lt;= s.length, t.length &lt;= 5*10^4</li><li>s 和 t 都只由小寫英文字組成。</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>原本想到的作法是遍歷 s 並記錄 s 中各字母出現次數，之後再遍歷 t 並用紀錄的陣列去減，如果有新字母或出現次數變成負數的情況就代表兩者不相同，但這樣做會導致最差情況(s 是 t 的 anagram)必須遍歷兩次 s 長度。</p><p>後來發現其實根本不需要分開遍歷，因為你可以<strong>從記錄 s 變成紀錄兩者差距</strong>，也就是 s 有的就加，t 有的就減，這樣你就只需要遍歷找完的字母出現次數差異陣列，發現有字母出現次數不等於 0 的時候就代表失敗。雖然最差情況(s 是 t 的 anagram 且字母出現次數不重複)也是遍歷兩次 s 長度，但這只會發生在剛好 26 個字母的時候，所以絕大情況下這個做法都是實際效能更高的。</p><ul><li>時間複雜度 O(N)，如何證明檢查存在鍵與拿取存放的時間複雜度請 <a href="/2022/10/19/PHPArray/">參考我的另一篇文章 - PHP Array</a></li><li>空間複雜度 O(N)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/app/LeetCode/Blind75/Array/ValidAnagram.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/tests/Unit/LeetCode/Blind75/Array/ValidAnagramTest.php">單元測試</a></li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="題目：">題目：</h2><p><a href="https://leetcode.com/problems/valid-anagram/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給定兩個字串 s 和 t，你必須判斷 s 是不是 t 的 anagram，若是則回傳 true，不是則回傳 false。</p><p>s 必須符合以下兩個條件才能算是 t 的 anagram :</p><ol><li>s 和 t 字串長度相同</li><li>s 和 t 有相同的字元數且各字元出現次數相同</li></ol><p>例如輸入 s = “anagram”, t = “nagaram”，應回傳 true。<br>輸入 s = “rat”, t = “car”，則回傳 false</p><ul><li>1 &lt;= s.length, t.length &lt;= 5*10^4</li><li>s 和 t 都只由小寫英文字組成。</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>原本想到的作法是遍歷 s 並記錄 s 中各字母出現次數，之後再遍歷 t 並用紀錄的陣列去減，如果有新字母或出現次數變成負數的情況就代表兩者不相同，但這樣做會導致最差情況(s 是 t 的 anagram)必須遍歷兩次 s 長度。</p><p>後來發現其實根本不需要分開遍歷，因為你可以<strong>從記錄 s 變成紀錄兩者差距</strong>，也就是 s 有的就加，t 有的就減，這樣你就只需要遍歷找完的字母出現次數差異陣列，發現有字母出現次數不等於 0 的時候就代表失敗。雖然最差情況(s 是 t 的 anagram 且字母出現次數不重複)也是遍歷兩次 s 長度，但這只會發生在剛好 26 個字母的時候，所以絕大情況下這個做法都是實際效能更高的。</p><ul><li>時間複雜度 O(N)，如何證明檢查存在鍵與拿取存放的時間複雜度請 <a href="/2022/10/19/PHPArray/">參考我的另一篇文章 - PHP Array</a></li><li>空間複雜度 O(N)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/app/LeetCode/Blind75/Array/ValidAnagram.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/tests/Unit/LeetCode/Blind75/Array/ValidAnagramTest.php">單元測試</a></li></ul>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/leetCode.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
-&lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/valid-anagram/&quot;&gt;官網題目連結&lt;/a&gt;&lt;/p</summary>
+    <summary type="html">&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/valid-anagram/&quot;&gt;官網題目連結&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;根據題目敘述，會給定兩個字串 s 和 t，你必須判斷 s </summary>
       
     
     
@@ -161,16 +163,17 @@
     <link href="https://koufuchi.github.io/2023/05/02/LeetCode/ContainsDuplicate/"/>
     <id>https://koufuchi.github.io/2023/05/02/LeetCode/ContainsDuplicate/</id>
     <published>2023-05-02T14:49:56.000Z</published>
-    <updated>2023-09-01T09:49:21.595Z</updated>
+    <updated>2023-09-04T01:43:49.788Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/leetCode.png" alt=""></p><h2 id="題目：">題目：</h2><p><a href="https://leetcode.com/problems/contains-duplicate/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給定一個整數陣列 nums，你必須判斷 nums 中是否有元素值是重複出現的，若有則回傳 true，沒有則回傳 false。</p><p>例如輸入 nums=[1, 2, 3, 1]，由於元素值 1 重複出現，所以回傳 true。<br>而若輸入 nums=[1, 2, 3, 4]，由於元素值都沒有重複出現，所以回傳 false。</p><ul><li>1 &lt;= nums.length &lt;= 10^5</li><li>-10^9 &lt;= nums[i] &lt;= 10^9</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>這題比 <a href="/2023/05/02/LeetCode/TwoSum/">TwoSum</a> 更簡單，因為我們不需要知道重複的元素分別在哪裡，只需要知道當檢查到重複元素值時就回傳 true 就好。</p><p>所以一樣可以花一點空間來換時間，也就是用另一個陣列來邊找邊記錄我們已找過的值，當發現 nums[i] 已經有找過時，就代表要回傳 true。</p><ul><li>時間複雜度 O(N)，如何證明檢查存在鍵與拿取存放的時間複雜度請 <a href="/2022/10/19/PHPArray/">參考我的另一篇文章 - PHP Array</a></li><li>空間複雜度 O(N)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/app/LeetCode/Blind75/Array/ContainsDuplicate.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/tests/Unit/LeetCode/Blind75/Array/ContainsDuplicateTest.php">單元測試</a></li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="題目：">題目：</h2><p><a href="https://leetcode.com/problems/contains-duplicate/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給定一個整數陣列 nums，你必須判斷 nums 中是否有元素值是重複出現的，若有則回傳 true，沒有則回傳 false。</p><p>例如輸入 nums=[1, 2, 3, 1]，由於元素值 1 重複出現，所以回傳 true。<br>而若輸入 nums=[1, 2, 3, 4]，由於元素值都沒有重複出現，所以回傳 false。</p><ul><li>1 &lt;= nums.length &lt;= 10^5</li><li>-10^9 &lt;= nums[i] &lt;= 10^9</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>這題比 <a href="/2023/05/02/LeetCode/TwoSum/">TwoSum</a> 更簡單，因為我們不需要知道重複的元素分別在哪裡，只需要知道當檢查到重複元素值時就回傳 true 就好。</p><p>所以一樣可以花一點空間來換時間，也就是用另一個陣列來邊找邊記錄我們已找過的值，當發現 nums[i] 已經有找過時，就代表要回傳 true。</p><ul><li>時間複雜度 O(N)，如何證明檢查存在鍵與拿取存放的時間複雜度請 <a href="/2022/10/19/PHPArray/">參考我的另一篇文章 - PHP Array</a></li><li>空間複雜度 O(N)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/app/LeetCode/Blind75/Array/ContainsDuplicate.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/tests/Unit/LeetCode/Blind75/Array/ContainsDuplicateTest.php">單元測試</a></li></ul>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/leetCode.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
-&lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/contains-duplicate/&quot;&gt;官網題目連結&lt;/</summary>
+    <summary type="html">&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/contains-duplicate/&quot;&gt;官網題目連結&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;根據題目敘述，會給定一個整數陣列 nums，你必</summary>
       
     
     
@@ -197,17 +200,18 @@
     <link href="https://koufuchi.github.io/2023/05/02/LeetCode/TwoSum/"/>
     <id>https://koufuchi.github.io/2023/05/02/LeetCode/TwoSum/</id>
     <published>2023-05-02T13:41:05.000Z</published>
-    <updated>2023-09-01T09:49:21.595Z</updated>
+    <updated>2023-09-04T01:43:49.789Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/leetCode.png" alt=""></p><h2 id="題目：">題目：</h2><p><a href="https://leetcode.com/problems/two-sum/">官網題目連結</a></p><blockquote><p>最經典的 LeetCode 第一題，求兩數之和！</p><p>根據題目敘述，會給定一個整數陣列 nums，還有一個整數 target，你必須找出 nums 中哪兩個元素相加會等於 target，用陣列回傳他們的索引。</p><p>例如輸入 nums=[2, 7, 11, 15], target=9，由於前兩個元素 2+7=9 剛好就是答案，所以回傳 [0 ,1]，題目特別說<strong>不看順序</strong>所以你要回傳 [1, 0] 也可以。</p><ul><li>2 &lt;= nums.length &lt;= 10^4</li><li>-10^9 &lt;= nums[i] &lt;= 10^9</li><li>-10^9 &lt;= target &lt;= 10^9</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>沒碰過演算法的人可能一開始都會想到用暴力解，也就是先用第 1 個去對剩下 N-1，再用第 2 個去對剩下 N-2 個，但這樣的做法會導致運算次數變成等差數列總和，也就是時間複雜度 O(N^2)。</p><p>我們可以花一點空間來換時間，也就是用另一個陣列來邊找邊記錄我們已找過的值，當發現 target - nums[i] 已經有找過時，就代表這是答案。</p><ul><li>時間複雜度 O(N)，如何證明檢查存在鍵與拿取存放的時間複雜度請 <a href="/2022/10/19/PHPArray/">參考我的另一篇文章 - PHP Array</a></li><li>空間複雜度 O(N)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/app/LeetCode/Blind75/Array/TwoSum.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/tests/Unit/LeetCode/Blind75/Array/TwoSumTest.php">單元測試</a></li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="題目：">題目：</h2><p><a href="https://leetcode.com/problems/two-sum/">官網題目連結</a></p><blockquote><p>最經典的 LeetCode 第一題，求兩數之和！</p><p>根據題目敘述，會給定一個整數陣列 nums，還有一個整數 target，你必須找出 nums 中哪兩個元素相加會等於 target，用陣列回傳他們的索引。</p><p>例如輸入 nums=[2, 7, 11, 15], target=9，由於前兩個元素 2+7=9 剛好就是答案，所以回傳 [0 ,1]，題目特別說<strong>不看順序</strong>所以你要回傳 [1, 0] 也可以。</p><ul><li>2 &lt;= nums.length &lt;= 10^4</li><li>-10^9 &lt;= nums[i] &lt;= 10^9</li><li>-10^9 &lt;= target &lt;= 10^9</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>沒碰過演算法的人可能一開始都會想到用暴力解，也就是先用第 1 個去對剩下 N-1，再用第 2 個去對剩下 N-2 個，但這樣的做法會導致運算次數變成等差數列總和，也就是時間複雜度 O(N^2)。</p><p>我們可以花一點空間來換時間，也就是用另一個陣列來邊找邊記錄我們已找過的值，當發現 target - nums[i] 已經有找過時，就代表這是答案。</p><ul><li>時間複雜度 O(N)，如何證明檢查存在鍵與拿取存放的時間複雜度請 <a href="/2022/10/19/PHPArray/">參考我的另一篇文章 - PHP Array</a></li><li>空間複雜度 O(N)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/app/LeetCode/Blind75/Array/TwoSum.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/LeetCodePHP/blob/main/tests/Unit/LeetCode/Blind75/Array/TwoSumTest.php">單元測試</a></li></ul>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/leetCode.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
+    <summary type="html">&lt;h2 id=&quot;題目：&quot;&gt;題目：&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/two-sum/&quot;&gt;官網題目連結&lt;/a&gt;&lt;/p&gt;
-&lt;blo</summary>
+&lt;blockquote&gt;
+&lt;p&gt;最經典的 LeetCode 第一題，求兩數之和！&lt;/p&gt;
+&lt;p&gt;根據題</summary>
       
     
     
