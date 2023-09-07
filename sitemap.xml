@@ -2,7 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://koufuchi.github.io/2023/09/05/Nginx/nginxCertbotLetsencrypt/</loc>
+    <loc>https://koufuchi.com/2023/09/03/Cache/CacheConsistencyMeta/</loc>
+    
+    <lastmod>2023-09-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://koufuchi.com/2023/09/05/Nginx/nginxCertbotLetsencrypt/</loc>
     
     <lastmod>2023-09-05</lastmod>
     
@@ -11,7 +20,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/game/theRaisingFightingSpirits.html</loc>
+    <loc>https://koufuchi.com/game/theRaisingFightingSpirits.html</loc>
     
     <lastmod>2023-09-05</lastmod>
     
@@ -20,7 +29,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/09/03/Cache/CacheConsistencyMeta/</loc>
+    <loc>https://koufuchi.com/game/dinoGame.html</loc>
     
     <lastmod>2023-09-05</lastmod>
     
@@ -29,16 +38,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/game/dinoGame.html</loc>
-    
-    <lastmod>2023-09-05</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://koufuchi.github.io/tags/index.html</loc>
+    <loc>https://koufuchi.com/tags/index.html</loc>
     
     <lastmod>2023-09-04</lastmod>
     
@@ -47,7 +47,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/index.html</loc>
+    <loc>https://koufuchi.com/categories/index.html</loc>
     
     <lastmod>2023-09-04</lastmod>
     
@@ -56,7 +56,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/about/index.html</loc>
+    <loc>https://koufuchi.com/about/index.html</loc>
     
     <lastmod>2023-09-04</lastmod>
     
@@ -65,7 +65,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/game/catchTheCat.html</loc>
+    <loc>https://koufuchi.com/game/catchTheCat.html</loc>
     
     <lastmod>2023-09-04</lastmod>
     
@@ -74,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/05/07/Cache/CacheConsistency/</loc>
+    <loc>https://koufuchi.com/2023/05/07/Cache/CacheConsistency/</loc>
     
     <lastmod>2023-09-04</lastmod>
     
@@ -83,7 +83,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/05/02/LeetCode/TwoSum/</loc>
+    <loc>https://koufuchi.com/2023/05/02/LeetCode/TwoSum/</loc>
     
     <lastmod>2023-09-04</lastmod>
     
@@ -92,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/05/03/LeetCode/ValidAnagram/</loc>
+    <loc>https://koufuchi.com/2023/05/03/LeetCode/ValidAnagram/</loc>
     
     <lastmod>2023-09-04</lastmod>
     
@@ -101,7 +101,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/05/02/LeetCode/ContainsDuplicate/</loc>
+    <loc>https://koufuchi.com/2023/05/02/LeetCode/ContainsDuplicate/</loc>
     
     <lastmod>2023-09-04</lastmod>
     
@@ -110,7 +110,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/05/05/LeetCode/GroupAnagrams/</loc>
+    <loc>https://koufuchi.com/2023/05/05/LeetCode/GroupAnagrams/</loc>
     
     <lastmod>2023-09-04</lastmod>
     
@@ -119,7 +119,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/25/Codility/CodilityLessonMaxCounters/</loc>
+    <loc>https://koufuchi.com/2023/04/25/Codility/CodilityLessonMaxCounters/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -128,7 +128,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/14/Codility/CodilityLessonPermMissingElem/</loc>
+    <loc>https://koufuchi.com/2023/04/14/Codility/CodilityLessonPermMissingElem/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -137,7 +137,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/14/Codility/CodilityLessonTapeEquilibrium/</loc>
+    <loc>https://koufuchi.com/2023/04/14/Codility/CodilityLessonTapeEquilibrium/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -146,7 +146,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/24/Codility/CodilityLessonPermCheck/</loc>
+    <loc>https://koufuchi.com/2023/04/24/Codility/CodilityLessonPermCheck/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -155,7 +155,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/12/Codility/CodilityLessonOddOccurrencesInArray/</loc>
+    <loc>https://koufuchi.com/2023/04/12/Codility/CodilityLessonOddOccurrencesInArray/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -164,7 +164,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/27/Codility/CodilityLessonMissingInteger/</loc>
+    <loc>https://koufuchi.com/2023/04/27/Codility/CodilityLessonMissingInteger/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -173,7 +173,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/24/Codility/CodilityLessonFrogRiverOne/</loc>
+    <loc>https://koufuchi.com/2023/04/24/Codility/CodilityLessonFrogRiverOne/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -182,7 +182,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/13/Codility/CodilityLessonFrogJmp/</loc>
+    <loc>https://koufuchi.com/2023/04/13/Codility/CodilityLessonFrogJmp/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -191,7 +191,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/11/Codility/CodilityLessonCyclicRotation/</loc>
+    <loc>https://koufuchi.com/2023/04/11/Codility/CodilityLessonCyclicRotation/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -200,7 +200,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/10/Codility/CodilityLessonBinaryGap/</loc>
+    <loc>https://koufuchi.com/2023/04/10/Codility/CodilityLessonBinaryGap/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -209,7 +209,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/05/07/Cache/CacheConsistencyCanal/</loc>
+    <loc>https://koufuchi.com/2023/05/07/Cache/CacheConsistencyCanal/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -218,7 +218,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/30/PostMan/PostmanTest/</loc>
+    <loc>https://koufuchi.com/2023/04/30/PostMan/PostmanTest/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -227,7 +227,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/05/01/SystemdToKeepAlive/</loc>
+    <loc>https://koufuchi.com/2022/10/19/PHPArray/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -236,7 +236,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/29/ThirdParty/</loc>
+    <loc>https://koufuchi.com/2023/05/01/SystemdToKeepAlive/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -245,7 +245,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2022/10/19/PHPArray/</loc>
+    <loc>https://koufuchi.com/2023/04/29/ThirdParty/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -254,7 +254,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/</loc>
+    <loc>https://koufuchi.com/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -263,7 +263,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/01/19/Cache/LRUCache/</loc>
+    <loc>https://koufuchi.com/2023/01/19/Cache/LRUCache/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -272,7 +272,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/2023/04/29/git/GitCommitMessage/</loc>
+    <loc>https://koufuchi.com/2023/04/29/git/GitCommitMessage/</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -281,7 +281,7 @@
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/googleb6db06ced544e568.html</loc>
+    <loc>https://koufuchi.com/googleb6db06ced544e568.html</loc>
     
     <lastmod>2023-09-01</lastmod>
     
@@ -291,205 +291,205 @@
   
 
   <url>
-    <loc>https://koufuchi.github.io/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Linux/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/PHP/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/systemd/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Array/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/HashTable/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/PHP/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Linux/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Array/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/systemd/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/HashTable/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Shell/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Homebrew/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Codility/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/macOS/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Shell/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Cache/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Homebrew/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/macOS/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/MySQL/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Cache/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Consistency/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/LeetCode/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Message-queue/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Blind75/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Consistency/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/MySQL/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Message-queue/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/LeetCode/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Nginx/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Blind75/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Certbot/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Nginx/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Let-s-Encrypt/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Certbot/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Docker/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Let-s-Encrypt/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Codility/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Docker/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/Postman/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/Postman/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/%E8%87%AA%E5%8B%95%E5%8C%96%E6%B8%AC%E8%A9%A6/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/%E8%87%AA%E5%8B%95%E5%8C%96%E6%B8%AC%E8%A9%A6/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/JavaScript/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/JavaScript/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/git/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/git/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/tags/style/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/tags/style/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -497,71 +497,71 @@
 
   
   <url>
-    <loc>https://koufuchi.github.io/categories/Linux/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/PHP/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/Linux/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/PHP/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/%E8%87%AA%E8%A3%BD%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/Codility/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/%E5%BF%AB%E5%8F%96/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/%E8%87%AA%E8%A3%BD%E5%B7%A5%E5%85%B7/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/LeetCode/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/%E5%BF%AB%E5%8F%96/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/Nginx/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/LeetCode/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/Codility/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/Nginx/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/Postman/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/Postman/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://koufuchi.github.io/categories/git/</loc>
-    <lastmod>2023-09-05</lastmod>
+    <loc>https://koufuchi.com/categories/git/</loc>
+    <lastmod>2023-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>

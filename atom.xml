@@ -3,11 +3,11 @@
   <title>Koufuchi&#39;s blog</title>
   
   
-  <link href="https://koufuchi.github.io/atom.xml" rel="self"/>
+  <link href="https://koufuchi.com/atom.xml" rel="self"/>
   
-  <link href="https://koufuchi.github.io/"/>
+  <link href="https://koufuchi.com/"/>
   <updated>2023-09-05T10:19:27.098Z</updated>
-  <id>https://koufuchi.github.io/</id>
+  <id>https://koufuchi.com/</id>
   
   <author>
     <name>Koufuchi</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>用 Certbot 來自動幫你的網站申請 &amp; 更新免費的 Let&#39;s Encrypt SSL 憑證吧 !</title>
-    <link href="https://koufuchi.github.io/2023/09/05/Nginx/nginxCertbotLetsencrypt/"/>
-    <id>https://koufuchi.github.io/2023/09/05/Nginx/nginxCertbotLetsencrypt/</id>
+    <link href="https://koufuchi.com/2023/09/05/Nginx/nginxCertbotLetsencrypt/"/>
+    <id>https://koufuchi.com/2023/09/05/Nginx/nginxCertbotLetsencrypt/</id>
     <published>2023-09-05T02:21:41.000Z</published>
     <updated>2023-09-05T10:19:27.098Z</updated>
     
@@ -36,29 +36,29 @@
     
     
     
-    <category term="Nginx" scheme="https://koufuchi.github.io/categories/Nginx/"/>
+    <category term="Nginx" scheme="https://koufuchi.com/categories/Nginx/"/>
     
     
-    <category term="Shell" scheme="https://koufuchi.github.io/tags/Shell/"/>
+    <category term="Shell" scheme="https://koufuchi.com/tags/Shell/"/>
     
-    <category term="Nginx" scheme="https://koufuchi.github.io/tags/Nginx/"/>
+    <category term="Nginx" scheme="https://koufuchi.com/tags/Nginx/"/>
     
-    <category term="Certbot" scheme="https://koufuchi.github.io/tags/Certbot/"/>
+    <category term="Certbot" scheme="https://koufuchi.com/tags/Certbot/"/>
     
-    <category term="Let&#39;s Encrypt" scheme="https://koufuchi.github.io/tags/Let-s-Encrypt/"/>
+    <category term="Let&#39;s Encrypt" scheme="https://koufuchi.com/tags/Let-s-Encrypt/"/>
     
-    <category term="Docker" scheme="https://koufuchi.github.io/tags/Docker/"/>
+    <category term="Docker" scheme="https://koufuchi.com/tags/Docker/"/>
     
   </entry>
   
   <entry>
     <title>快取的一致性難題與架構模式 (下)</title>
-    <link href="https://koufuchi.github.io/2023/09/03/Cache/CacheConsistencyMeta/"/>
-    <id>https://koufuchi.github.io/2023/09/03/Cache/CacheConsistencyMeta/</id>
+    <link href="https://koufuchi.com/2023/09/03/Cache/CacheConsistencyMeta/"/>
+    <id>https://koufuchi.com/2023/09/03/Cache/CacheConsistencyMeta/</id>
     <published>2023-09-03T15:38:54.000Z</published>
-    <updated>2023-09-05T03:21:14.041Z</updated>
+    <updated>2023-09-06T05:32:13.897Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="Meta-是怎麼做的？">Meta 是怎麼做的？</h2><blockquote><ul><li>讀：和 Read aside 一樣。先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：先寫回 DB，接著清掉 Cache</li></ul><p>讀寫和 Read aside 一樣，但對 Cache 的操作採用版本控制及 Polaris 系統實作</p></blockquote><h2 id="版本控制">版本控制 :</h2><blockquote><p>所有對 Cache 寫入的請求字段要附加版本資訊</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 依收到請求的時間排序</span><br><span class="line">SET x=1 @VERSION=1 </span><br><span class="line">SET x=12345 @VERSION=3 (先到，所以先寫入) </span><br><span class="line">SET x=45678 @VERSION=2 (無效，因為剛剛已經先寫版本3了，所以版本2比較低視為無效） </span><br></pre></td></tr></table></figure><p>缺點：若在 v2 的請求到達之前 v3 的資料就先被清除，v2 就會被成功寫入</p></blockquote><h2 id="Polaris">Polaris :</h2><blockquote><p>是一個基於 Multi-Paxos 演算法實作的系統。</p><p><img src="/images/polaris.webp" alt=""></p><p>Polaris 是獨立的監控服務。<br>如上圖，當 DB 某資料更新成 x=4 後，會發請求告訴所有 Cache “x=4 @version 4” 的失效事件(invalidation event)，表示跟 “x=4 @version 4” 不同的快取已失效，而這時 Polaris 會和其他 Cache 一起收到同樣的請求。</p><p>接著，Polaris 會去查詢其他 Cache 以便確認他們是否已經更新完成。</p><p>假如其中一台 Cache 返回 “x=3 @version 3”， 則 Polaris 會將這台 Cache 標記為不一致，並將這次檢查重新排隊，以便待會再重新檢查一次。<br>有個特別的地方在於 Polaris 的不一致回報會有 1, 5, 10分鐘內的不同時間尺度，當發現某個 cache 持續 1 分鐘以上不一致後，Polaris 會將此報告歸類為 5 分鐘內的不一致。</p><p>以 Polaris 的角度來看，當收到不一致的回報時，可能會有不同的情況，例如：<br>Polaris 收到 “x=4 @version 4” 的失效事件，但是當它查詢 Cache A 時，A 的回覆是 “x” 不存在 。</p><ul><li>狀況1： x 的 v3 是不可視(invisible)，而 v4 是對 x 的最新寫入，所以 Cache A 為不一致。</li><li>狀況2：x 的 v5 是刪除 x，所以 Polaris 在 v4 還沒檢查完的情況下，Cache A 就已經同步了 v5， 但並不是不一致。</li></ul><p>由於兩種狀況互斥，必須查詢 DB 才能區分是狀況1還是狀況2，但是對 DB 的操作成本是非常高的，所以這時候 Polaris 的時間尺度設計就派上用場。<br>由於真正的緩存不一致和對同一鍵的競速寫操作很少見，對 Cache 重新多做幾次確認就能過濾掉並非真正不一致的情況，而可以彈性設定成例如當 5 分鐘內都還是有不一致的狀況時，才對 DB 做查詢。</p><p>根據官方使用 Polaris 監測的數據，有 99.99999999% 的緩存寫入在五分鐘內是一致的。而在五分鐘後，100 億次緩存寫入中只有不到 1 次會出現不一致，這個有點饒舌的數據也是因為前面提到的時間尺度設計。</p></blockquote><h2 id="小結">小結 :</h2><blockquote><p>Meta 的部落格講了很多架構原理，也因此更能感受到一個高可用性的系統是如何的複雜且高成本，以一般小公司來說可能簡單的 Read Aside 就永遠不會遇到不一致的狀況了，所以終歸是需要依照尖峰的 QPS 和系統能力來判斷是否需要更進一步的拓展，這也是工程師經驗的價值所在。</p></blockquote><h2 id="參考">參考 :</h2><ul><li><a href="https://engineering.fb.com/2022/06/08/core-data/cache-invalidation/">官方技術部落格 Cache made consistent</a></li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="Meta-是怎麼做的？">Meta 是怎麼做的？</h2><blockquote><ul><li>讀：和 Read aside 一樣。先從 Cache 讀，讀到就回，沒讀到就從 DB 讀然後寫回 Cache。</li><li>寫：先寫回 DB，接著清掉 Cache</li></ul><p>讀寫和 Read aside 一樣，但對 Cache 的操作採用版本控制及 Polaris 系統實作</p></blockquote><h2 id="版本控制">版本控制 :</h2><blockquote><p>所有對 Cache 寫入的請求字段要附加版本資訊</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 依收到請求的時間排序</span><br><span class="line">SET x=1 @VERSION=1 </span><br><span class="line">SET x=12345 @VERSION=3 (先到，所以先寫入) </span><br><span class="line">SET x=45678 @VERSION=2 (無效，因為剛剛已經先寫版本3了，所以版本2比較低視為無效） </span><br></pre></td></tr></table></figure><p>缺點：若在 v2 的請求到達之前 v3 的資料就先被清除，v2 就會被成功寫入</p></blockquote><h2 id="Polaris">Polaris :</h2><blockquote><p>是一個基於 Multi-Paxos 演算法實作的系統。</p><p><img src="/images/polaris.webp" alt=""></p><p>Polaris 是獨立的監控服務。<br>如上圖，當 DB 某資料更新成 x=4 後，會發請求告訴所有 Cache “x=4 @version 4” 的失效事件(invalidation event)，表示跟 “x=4 @version 4” 不同的快取已失效，而這時 Polaris 會和其他 Cache 一起收到同樣的請求。</p><p>接著，Polaris 會去查詢其他 Cache 以便確認他們是否已經更新完成。</p><p>假如其中一台 Cache 返回 “x=3 @version 3”， 則 Polaris 會將這台 Cache 標記為不一致，並將這次檢查重新排隊，以便待會再重新檢查一次。<br>有個特別的地方在於 Polaris 的不一致回報會有 1, 5, 10分鐘內的不同時間尺度，當發現某個 cache 持續 1 分鐘以上不一致後，Polaris 會將此報告歸類為 5 分鐘內的不一致。</p><p>以 Polaris 的角度來看，當收到不一致的回報時，可能會有不同的情況，例如：<br>Polaris 收到 “x=4 @version 4” 的失效事件，但是當它查詢 Cache A 時，A 的回覆是 “x” 不存在 。</p><ul><li>狀況1：x 的 v3 是不可視(invisible)，而 v4 是對 x 的最新寫入，所以 Cache A 為不一致。</li><li>狀況2：x 的 v5 是刪除 x，所以 Polaris 在 v4 還沒檢查完的情況下，Cache A 就已經同步了 v5， 但並不是不一致。</li></ul><p>由於兩種狀況互斥，必須查詢 DB 才能區分是狀況1還是狀況2，但是對 DB 的操作成本是非常高的，所以這時候 Polaris 的時間尺度設計就派上用場。<br>由於真正的緩存不一致和對同一鍵的競速寫操作很少見，對 Cache 重新多做幾次確認就能過濾掉並非真正不一致的情況，而可以彈性設定成例如當 5 分鐘內都還是有不一致的狀況時，才對 DB 做查詢。</p><p>根據官方使用 Polaris 監測的數據，有 99.99999999% 的緩存寫入在五分鐘內是一致的。而在五分鐘後，100 億次緩存寫入中只有不到 1 次會出現不一致，這個有點饒舌的數據也是因為前面提到的時間尺度設計。</p></blockquote><h2 id="小結">小結 :</h2><blockquote><p>Meta 的部落格講了很多架構原理，也因此更能感受到一個高可用性的系統是如何的複雜且高成本，以一般小公司來說可能簡單的 Read Aside 就永遠不會遇到不一致的狀況了，所以終歸是需要依照尖峰的 QPS 和系統能力來判斷是否需要更進一步的拓展，這也是工程師經驗的價值所在。</p></blockquote><h2 id="參考">參考 :</h2><ul><li><a href="https://engineering.fb.com/2022/06/08/core-data/cache-invalidation/">官方技術部落格 Cache made consistent</a></li></ul>]]></content>
     
     
       
@@ -72,23 +72,23 @@
     
     
     
-    <category term="快取" scheme="https://koufuchi.github.io/categories/%E5%BF%AB%E5%8F%96/"/>
+    <category term="快取" scheme="https://koufuchi.com/categories/%E5%BF%AB%E5%8F%96/"/>
     
     
-    <category term="Cache" scheme="https://koufuchi.github.io/tags/Cache/"/>
+    <category term="Cache" scheme="https://koufuchi.com/tags/Cache/"/>
     
-    <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
+    <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="MySQL" scheme="https://koufuchi.github.io/tags/MySQL/"/>
+    <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
     
-    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
+    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
     
   </entry>
   
   <entry>
     <title>快取的一致性難題與架構模式 (中)</title>
-    <link href="https://koufuchi.github.io/2023/05/07/Cache/CacheConsistencyCanal/"/>
-    <id>https://koufuchi.github.io/2023/05/07/Cache/CacheConsistencyCanal/</id>
+    <link href="https://koufuchi.com/2023/05/07/Cache/CacheConsistencyCanal/"/>
+    <id>https://koufuchi.com/2023/05/07/Cache/CacheConsistencyCanal/</id>
     <published>2023-05-07T12:58:29.000Z</published>
     <updated>2023-09-01T10:16:28.697Z</updated>
     
@@ -106,23 +106,23 @@
     
     
     
-    <category term="快取" scheme="https://koufuchi.github.io/categories/%E5%BF%AB%E5%8F%96/"/>
+    <category term="快取" scheme="https://koufuchi.com/categories/%E5%BF%AB%E5%8F%96/"/>
     
     
-    <category term="Cache" scheme="https://koufuchi.github.io/tags/Cache/"/>
+    <category term="Cache" scheme="https://koufuchi.com/tags/Cache/"/>
     
-    <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
+    <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="MySQL" scheme="https://koufuchi.github.io/tags/MySQL/"/>
+    <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
     
-    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
+    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
     
   </entry>
   
   <entry>
     <title>快取的一致性難題與架構模式 (上)</title>
-    <link href="https://koufuchi.github.io/2023/05/07/Cache/CacheConsistency/"/>
-    <id>https://koufuchi.github.io/2023/05/07/Cache/CacheConsistency/</id>
+    <link href="https://koufuchi.com/2023/05/07/Cache/CacheConsistency/"/>
+    <id>https://koufuchi.com/2023/05/07/Cache/CacheConsistency/</id>
     <published>2023-05-07T04:42:32.000Z</published>
     <updated>2023-09-04T02:54:35.349Z</updated>
     
@@ -138,25 +138,25 @@
     
     
     
-    <category term="快取" scheme="https://koufuchi.github.io/categories/%E5%BF%AB%E5%8F%96/"/>
+    <category term="快取" scheme="https://koufuchi.com/categories/%E5%BF%AB%E5%8F%96/"/>
     
     
-    <category term="Cache" scheme="https://koufuchi.github.io/tags/Cache/"/>
+    <category term="Cache" scheme="https://koufuchi.com/tags/Cache/"/>
     
-    <category term="系統架構" scheme="https://koufuchi.github.io/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
+    <category term="計算機組織" scheme="https://koufuchi.com/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/"/>
     
-    <category term="Consistency" scheme="https://koufuchi.github.io/tags/Consistency/"/>
+    <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="計算機組織" scheme="https://koufuchi.github.io/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/"/>
+    <category term="Message queue" scheme="https://koufuchi.com/tags/Message-queue/"/>
     
-    <category term="Message queue" scheme="https://koufuchi.github.io/tags/Message-queue/"/>
+    <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
     
   </entry>
   
   <entry>
     <title>LeetCode 49. Group Anagrams</title>
-    <link href="https://koufuchi.github.io/2023/05/05/LeetCode/GroupAnagrams/"/>
-    <id>https://koufuchi.github.io/2023/05/05/LeetCode/GroupAnagrams/</id>
+    <link href="https://koufuchi.com/2023/05/05/LeetCode/GroupAnagrams/"/>
+    <id>https://koufuchi.com/2023/05/05/LeetCode/GroupAnagrams/</id>
     <published>2023-05-05T14:35:31.000Z</published>
     <updated>2023-09-04T01:43:49.788Z</updated>
     
@@ -173,27 +173,27 @@
     
     
     
-    <category term="LeetCode" scheme="https://koufuchi.github.io/categories/LeetCode/"/>
+    <category term="LeetCode" scheme="https://koufuchi.com/categories/LeetCode/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
+    <category term="Array" scheme="https://koufuchi.com/tags/Array/"/>
     
-    <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
+    <category term="HashTable" scheme="https://koufuchi.com/tags/HashTable/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
+    <category term="LeetCode" scheme="https://koufuchi.com/tags/LeetCode/"/>
     
-    <category term="Blind75" scheme="https://koufuchi.github.io/tags/Blind75/"/>
+    <category term="Blind75" scheme="https://koufuchi.com/tags/Blind75/"/>
     
   </entry>
   
   <entry>
     <title>LeetCode 242. Valid Anagram</title>
-    <link href="https://koufuchi.github.io/2023/05/03/LeetCode/ValidAnagram/"/>
-    <id>https://koufuchi.github.io/2023/05/03/LeetCode/ValidAnagram/</id>
+    <link href="https://koufuchi.com/2023/05/03/LeetCode/ValidAnagram/"/>
+    <id>https://koufuchi.com/2023/05/03/LeetCode/ValidAnagram/</id>
     <published>2023-05-03T13:48:38.000Z</published>
     <updated>2023-09-04T01:43:49.789Z</updated>
     
@@ -210,27 +210,27 @@
     
     
     
-    <category term="LeetCode" scheme="https://koufuchi.github.io/categories/LeetCode/"/>
+    <category term="LeetCode" scheme="https://koufuchi.com/categories/LeetCode/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
+    <category term="Array" scheme="https://koufuchi.com/tags/Array/"/>
     
-    <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
+    <category term="HashTable" scheme="https://koufuchi.com/tags/HashTable/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
+    <category term="LeetCode" scheme="https://koufuchi.com/tags/LeetCode/"/>
     
-    <category term="Blind75" scheme="https://koufuchi.github.io/tags/Blind75/"/>
+    <category term="Blind75" scheme="https://koufuchi.com/tags/Blind75/"/>
     
   </entry>
   
   <entry>
     <title>LeetCode 217. Contains Duplicate</title>
-    <link href="https://koufuchi.github.io/2023/05/02/LeetCode/ContainsDuplicate/"/>
-    <id>https://koufuchi.github.io/2023/05/02/LeetCode/ContainsDuplicate/</id>
+    <link href="https://koufuchi.com/2023/05/02/LeetCode/ContainsDuplicate/"/>
+    <id>https://koufuchi.com/2023/05/02/LeetCode/ContainsDuplicate/</id>
     <published>2023-05-02T14:49:56.000Z</published>
     <updated>2023-09-04T01:43:49.788Z</updated>
     
@@ -247,27 +247,27 @@
     
     
     
-    <category term="LeetCode" scheme="https://koufuchi.github.io/categories/LeetCode/"/>
+    <category term="LeetCode" scheme="https://koufuchi.com/categories/LeetCode/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
+    <category term="Array" scheme="https://koufuchi.com/tags/Array/"/>
     
-    <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
+    <category term="HashTable" scheme="https://koufuchi.com/tags/HashTable/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
+    <category term="LeetCode" scheme="https://koufuchi.com/tags/LeetCode/"/>
     
-    <category term="Blind75" scheme="https://koufuchi.github.io/tags/Blind75/"/>
+    <category term="Blind75" scheme="https://koufuchi.com/tags/Blind75/"/>
     
   </entry>
   
   <entry>
     <title>LeetCode 1. Two Sum</title>
-    <link href="https://koufuchi.github.io/2023/05/02/LeetCode/TwoSum/"/>
-    <id>https://koufuchi.github.io/2023/05/02/LeetCode/TwoSum/</id>
+    <link href="https://koufuchi.com/2023/05/02/LeetCode/TwoSum/"/>
+    <id>https://koufuchi.com/2023/05/02/LeetCode/TwoSum/</id>
     <published>2023-05-02T13:41:05.000Z</published>
     <updated>2023-09-04T01:43:49.789Z</updated>
     
@@ -285,27 +285,27 @@
     
     
     
-    <category term="LeetCode" scheme="https://koufuchi.github.io/categories/LeetCode/"/>
+    <category term="LeetCode" scheme="https://koufuchi.com/categories/LeetCode/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="Array" scheme="https://koufuchi.github.io/tags/Array/"/>
+    <category term="Array" scheme="https://koufuchi.com/tags/Array/"/>
     
-    <category term="HashTable" scheme="https://koufuchi.github.io/tags/HashTable/"/>
+    <category term="HashTable" scheme="https://koufuchi.com/tags/HashTable/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="LeetCode" scheme="https://koufuchi.github.io/tags/LeetCode/"/>
+    <category term="LeetCode" scheme="https://koufuchi.com/tags/LeetCode/"/>
     
-    <category term="Blind75" scheme="https://koufuchi.github.io/tags/Blind75/"/>
+    <category term="Blind75" scheme="https://koufuchi.com/tags/Blind75/"/>
     
   </entry>
   
   <entry>
     <title>用 Linux 的 systemd 來保持你的服務吧 !</title>
-    <link href="https://koufuchi.github.io/2023/05/01/SystemdToKeepAlive/"/>
-    <id>https://koufuchi.github.io/2023/05/01/SystemdToKeepAlive/</id>
+    <link href="https://koufuchi.com/2023/05/01/SystemdToKeepAlive/"/>
+    <id>https://koufuchi.com/2023/05/01/SystemdToKeepAlive/</id>
     <published>2023-05-01T05:45:27.000Z</published>
     <updated>2023-09-01T10:15:40.653Z</updated>
     
@@ -322,19 +322,19 @@
     
     
     
-    <category term="Linux" scheme="https://koufuchi.github.io/categories/Linux/"/>
+    <category term="Linux" scheme="https://koufuchi.com/categories/Linux/"/>
     
     
-    <category term="Linux" scheme="https://koufuchi.github.io/tags/Linux/"/>
+    <category term="Linux" scheme="https://koufuchi.com/tags/Linux/"/>
     
-    <category term="systemd" scheme="https://koufuchi.github.io/tags/systemd/"/>
+    <category term="systemd" scheme="https://koufuchi.com/tags/systemd/"/>
     
   </entry>
   
   <entry>
     <title>用 Postman 實現 api 自動測試吧 !</title>
-    <link href="https://koufuchi.github.io/2023/04/30/PostMan/PostmanTest/"/>
-    <id>https://koufuchi.github.io/2023/04/30/PostMan/PostmanTest/</id>
+    <link href="https://koufuchi.com/2023/04/30/PostMan/PostmanTest/"/>
+    <id>https://koufuchi.com/2023/04/30/PostMan/PostmanTest/</id>
     <published>2023-04-30T02:21:41.000Z</published>
     <updated>2023-09-01T10:15:40.665Z</updated>
     
@@ -351,21 +351,21 @@
     
     
     
-    <category term="Postman" scheme="https://koufuchi.github.io/categories/Postman/"/>
+    <category term="Postman" scheme="https://koufuchi.com/categories/Postman/"/>
     
     
-    <category term="Postman" scheme="https://koufuchi.github.io/tags/Postman/"/>
+    <category term="Postman" scheme="https://koufuchi.com/tags/Postman/"/>
     
-    <category term="自動化測試" scheme="https://koufuchi.github.io/tags/%E8%87%AA%E5%8B%95%E5%8C%96%E6%B8%AC%E8%A9%A6/"/>
+    <category term="自動化測試" scheme="https://koufuchi.com/tags/%E8%87%AA%E5%8B%95%E5%8C%96%E6%B8%AC%E8%A9%A6/"/>
     
-    <category term="JavaScript" scheme="https://koufuchi.github.io/tags/JavaScript/"/>
+    <category term="JavaScript" scheme="https://koufuchi.com/tags/JavaScript/"/>
     
   </entry>
   
   <entry>
     <title>常用的第三方工具</title>
-    <link href="https://koufuchi.github.io/2023/04/29/ThirdParty/"/>
-    <id>https://koufuchi.github.io/2023/04/29/ThirdParty/</id>
+    <link href="https://koufuchi.com/2023/04/29/ThirdParty/"/>
+    <id>https://koufuchi.com/2023/04/29/ThirdParty/</id>
     <published>2023-04-29T12:25:54.000Z</published>
     <updated>2023-09-01T10:15:40.653Z</updated>
     
@@ -385,17 +385,17 @@
     
     
     
-    <category term="第三方工具" scheme="https://koufuchi.github.io/categories/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/"/>
+    <category term="第三方工具" scheme="https://koufuchi.com/categories/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/"/>
     
     
-    <category term="第三方工具" scheme="https://koufuchi.github.io/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/"/>
+    <category term="第三方工具" scheme="https://koufuchi.com/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B7%A5%E5%85%B7/"/>
     
   </entry>
   
   <entry>
     <title>讓你的 git commit message 更容易閱讀</title>
-    <link href="https://koufuchi.github.io/2023/04/29/git/GitCommitMessage/"/>
-    <id>https://koufuchi.github.io/2023/04/29/git/GitCommitMessage/</id>
+    <link href="https://koufuchi.com/2023/04/29/git/GitCommitMessage/"/>
+    <id>https://koufuchi.com/2023/04/29/git/GitCommitMessage/</id>
     <published>2023-04-29T07:42:07.000Z</published>
     <updated>2023-09-01T10:15:40.653Z</updated>
     
@@ -411,19 +411,19 @@
     
     
     
-    <category term="git" scheme="https://koufuchi.github.io/categories/git/"/>
+    <category term="git" scheme="https://koufuchi.com/categories/git/"/>
     
     
-    <category term="git" scheme="https://koufuchi.github.io/tags/git/"/>
+    <category term="git" scheme="https://koufuchi.com/tags/git/"/>
     
-    <category term="style" scheme="https://koufuchi.github.io/tags/style/"/>
+    <category term="style" scheme="https://koufuchi.com/tags/style/"/>
     
   </entry>
   
   <entry>
     <title>Codility Lesson MissingInteger</title>
-    <link href="https://koufuchi.github.io/2023/04/27/Codility/CodilityLessonMissingInteger/"/>
-    <id>https://koufuchi.github.io/2023/04/27/Codility/CodilityLessonMissingInteger/</id>
+    <link href="https://koufuchi.com/2023/04/27/Codility/CodilityLessonMissingInteger/"/>
+    <id>https://koufuchi.com/2023/04/27/Codility/CodilityLessonMissingInteger/</id>
     <published>2023-04-27T12:35:52.000Z</published>
     <updated>2023-09-01T10:19:14.945Z</updated>
     
@@ -439,21 +439,21 @@
     
     
     
-    <category term="Codility" scheme="https://koufuchi.github.io/categories/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/categories/Codility/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="Codility" scheme="https://koufuchi.github.io/tags/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/tags/Codility/"/>
     
   </entry>
   
   <entry>
     <title>Codility Lesson MaxCounters</title>
-    <link href="https://koufuchi.github.io/2023/04/25/Codility/CodilityLessonMaxCounters/"/>
-    <id>https://koufuchi.github.io/2023/04/25/Codility/CodilityLessonMaxCounters/</id>
+    <link href="https://koufuchi.com/2023/04/25/Codility/CodilityLessonMaxCounters/"/>
+    <id>https://koufuchi.com/2023/04/25/Codility/CodilityLessonMaxCounters/</id>
     <published>2023-04-25T15:03:41.000Z</published>
     <updated>2023-09-01T10:20:00.093Z</updated>
     
@@ -469,21 +469,21 @@
     
     
     
-    <category term="Codility" scheme="https://koufuchi.github.io/categories/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/categories/Codility/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="Codility" scheme="https://koufuchi.github.io/tags/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/tags/Codility/"/>
     
   </entry>
   
   <entry>
     <title>Codility Lesson PermCheck</title>
-    <link href="https://koufuchi.github.io/2023/04/24/Codility/CodilityLessonPermCheck/"/>
-    <id>https://koufuchi.github.io/2023/04/24/Codility/CodilityLessonPermCheck/</id>
+    <link href="https://koufuchi.com/2023/04/24/Codility/CodilityLessonPermCheck/"/>
+    <id>https://koufuchi.com/2023/04/24/Codility/CodilityLessonPermCheck/</id>
     <published>2023-04-24T12:59:03.000Z</published>
     <updated>2023-09-01T10:19:32.946Z</updated>
     
@@ -500,21 +500,21 @@
     
     
     
-    <category term="Codility" scheme="https://koufuchi.github.io/categories/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/categories/Codility/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="Codility" scheme="https://koufuchi.github.io/tags/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/tags/Codility/"/>
     
   </entry>
   
   <entry>
     <title>Codility Lesson FrogRiverOne</title>
-    <link href="https://koufuchi.github.io/2023/04/24/Codility/CodilityLessonFrogRiverOne/"/>
-    <id>https://koufuchi.github.io/2023/04/24/Codility/CodilityLessonFrogRiverOne/</id>
+    <link href="https://koufuchi.com/2023/04/24/Codility/CodilityLessonFrogRiverOne/"/>
+    <id>https://koufuchi.com/2023/04/24/Codility/CodilityLessonFrogRiverOne/</id>
     <published>2023-04-24T12:23:10.000Z</published>
     <updated>2023-09-01T10:19:07.993Z</updated>
     
@@ -530,21 +530,21 @@
     
     
     
-    <category term="Codility" scheme="https://koufuchi.github.io/categories/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/categories/Codility/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="Codility" scheme="https://koufuchi.github.io/tags/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/tags/Codility/"/>
     
   </entry>
   
   <entry>
     <title>用 Homebrew 懶人切換 php 版本</title>
-    <link href="https://koufuchi.github.io/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/"/>
-    <id>https://koufuchi.github.io/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/</id>
+    <link href="https://koufuchi.com/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/"/>
+    <id>https://koufuchi.com/2023/04/19/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/</id>
     <published>2023-04-19T14:42:07.000Z</published>
     <updated>2023-09-01T10:15:40.653Z</updated>
     
@@ -563,23 +563,23 @@
     
     
     
-    <category term="自製工具" scheme="https://koufuchi.github.io/categories/%E8%87%AA%E8%A3%BD%E5%B7%A5%E5%85%B7/"/>
+    <category term="自製工具" scheme="https://koufuchi.com/categories/%E8%87%AA%E8%A3%BD%E5%B7%A5%E5%85%B7/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="Shell" scheme="https://koufuchi.github.io/tags/Shell/"/>
+    <category term="Shell" scheme="https://koufuchi.com/tags/Shell/"/>
     
-    <category term="Homebrew" scheme="https://koufuchi.github.io/tags/Homebrew/"/>
+    <category term="Homebrew" scheme="https://koufuchi.com/tags/Homebrew/"/>
     
-    <category term="macOS" scheme="https://koufuchi.github.io/tags/macOS/"/>
+    <category term="macOS" scheme="https://koufuchi.com/tags/macOS/"/>
     
   </entry>
   
   <entry>
     <title>Codility Lesson PermMissingElem</title>
-    <link href="https://koufuchi.github.io/2023/04/14/Codility/CodilityLessonPermMissingElem/"/>
-    <id>https://koufuchi.github.io/2023/04/14/Codility/CodilityLessonPermMissingElem/</id>
+    <link href="https://koufuchi.com/2023/04/14/Codility/CodilityLessonPermMissingElem/"/>
+    <id>https://koufuchi.com/2023/04/14/Codility/CodilityLessonPermMissingElem/</id>
     <published>2023-04-14T11:25:12.000Z</published>
     <updated>2023-09-01T10:19:49.327Z</updated>
     
@@ -595,21 +595,21 @@
     
     
     
-    <category term="Codility" scheme="https://koufuchi.github.io/categories/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/categories/Codility/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="Codility" scheme="https://koufuchi.github.io/tags/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/tags/Codility/"/>
     
   </entry>
   
   <entry>
     <title>Codility Lesson TapeEquilibrium</title>
-    <link href="https://koufuchi.github.io/2023/04/14/Codility/CodilityLessonTapeEquilibrium/"/>
-    <id>https://koufuchi.github.io/2023/04/14/Codility/CodilityLessonTapeEquilibrium/</id>
+    <link href="https://koufuchi.com/2023/04/14/Codility/CodilityLessonTapeEquilibrium/"/>
+    <id>https://koufuchi.com/2023/04/14/Codility/CodilityLessonTapeEquilibrium/</id>
     <published>2023-04-14T11:25:12.000Z</published>
     <updated>2023-09-01T10:19:41.012Z</updated>
     
@@ -625,21 +625,21 @@
     
     
     
-    <category term="Codility" scheme="https://koufuchi.github.io/categories/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/categories/Codility/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="Codility" scheme="https://koufuchi.github.io/tags/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/tags/Codility/"/>
     
   </entry>
   
   <entry>
     <title>Codility Lesson FrogJmp</title>
-    <link href="https://koufuchi.github.io/2023/04/13/Codility/CodilityLessonFrogJmp/"/>
-    <id>https://koufuchi.github.io/2023/04/13/Codility/CodilityLessonFrogJmp/</id>
+    <link href="https://koufuchi.com/2023/04/13/Codility/CodilityLessonFrogJmp/"/>
+    <id>https://koufuchi.com/2023/04/13/Codility/CodilityLessonFrogJmp/</id>
     <published>2023-04-13T11:30:55.000Z</published>
     <updated>2023-09-01T10:18:59.870Z</updated>
     
@@ -656,14 +656,14 @@
     
     
     
-    <category term="Codility" scheme="https://koufuchi.github.io/categories/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/categories/Codility/"/>
     
     
-    <category term="PHP" scheme="https://koufuchi.github.io/tags/PHP/"/>
+    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
-    <category term="演算法" scheme="https://koufuchi.github.io/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
-    <category term="Codility" scheme="https://koufuchi.github.io/tags/Codility/"/>
+    <category term="Codility" scheme="https://koufuchi.com/tags/Codility/"/>
     
   </entry>
   
