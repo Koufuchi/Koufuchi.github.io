@@ -150,15 +150,15 @@
             
             <tag> PHP </tag>
             
-            <tag> Array </tag>
-            
-            <tag> HashTable </tag>
-            
             <tag> 演算法 </tag>
             
             <tag> LeetCode </tag>
             
             <tag> Blind75 </tag>
+            
+            <tag> Array </tag>
+            
+            <tag> HashTable </tag>
             
         </tags>
       
@@ -185,15 +185,15 @@
             
             <tag> PHP </tag>
             
-            <tag> Array </tag>
-            
-            <tag> HashTable </tag>
-            
             <tag> 演算法 </tag>
             
             <tag> LeetCode </tag>
             
             <tag> Blind75 </tag>
+            
+            <tag> Array </tag>
+            
+            <tag> HashTable </tag>
             
         </tags>
       
@@ -220,15 +220,15 @@
             
             <tag> PHP </tag>
             
-            <tag> Array </tag>
-            
-            <tag> HashTable </tag>
-            
             <tag> 演算法 </tag>
             
             <tag> LeetCode </tag>
             
             <tag> Blind75 </tag>
+            
+            <tag> Array </tag>
+            
+            <tag> HashTable </tag>
             
         </tags>
       
@@ -255,15 +255,15 @@
             
             <tag> PHP </tag>
             
-            <tag> Array </tag>
-            
-            <tag> HashTable </tag>
-            
             <tag> 演算法 </tag>
             
             <tag> LeetCode </tag>
             
             <tag> Blind75 </tag>
+            
+            <tag> Array </tag>
+            
+            <tag> HashTable </tag>
             
         </tags>
       
@@ -527,11 +527,11 @@
     
     
     <entry>
-      <title>Codility Lesson TapeEquilibrium</title>
-      <link href="/2023/04/14/Codility/CodilityLessonTapeEquilibrium/"/>
-      <url>/2023/04/14/Codility/CodilityLessonTapeEquilibrium/</url>
+      <title>Codility Lesson PermMissingElem</title>
+      <link href="/2023/04/14/Codility/CodilityLessonPermMissingElem/"/>
+      <url>/2023/04/14/Codility/CodilityLessonPermMissingElem/</url>
       
-        <content type="html"><![CDATA[<h2 id="題目：">題目：</h2><p><a href="https://app.codility.com/programmers/lessons/3-time_complexity/tape_equilibrium/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給一個由 N 個不同整數組成的<strong>非空</strong>陣列 A。遍歷到 A 的任一非 0 索引 P 時，會將陣列分成 A[1], A[2],…, A[P−1] 以及 A[P]、A[P+1],…, A[N−1] 兩個部分，其<strong>差異</strong>指的就是這兩部分<strong>各自加總</strong>後相減的絕對值。</p><p>例如輸入 A=[3, 1, 2, 4, 3] 時，可能的 P 值就會是 1~4，且他們的差異會是:</p><ol><li>P = 1，差異 = |3 − 10| = 7   (3 vs 1+2+4+3)</li><li>P = 2，差異 = |4 − 9| = 5    (3+1 vs 2+4+3)</li><li>P = 3，差異 = |6 − 7| = 1</li><li>P = 4，差異 = |10 − 3| = 7</li></ol><p>你的方法必須能吃這個陣列，並返回其中最小的差異，以上述例子來看就是 1</p><ul><li>N 是範圍 [2~100000] 的整數。</li><li>陣列 A 裡的元素都是範圍 [-1000~1000] 的整數</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>這題敘述挺長的，有可能會一時不知道怎麼下手，但其實原則很簡單，就是一樣想辦法遍歷一次就做完。<br>我們會發現從 P 到 P+1 時，相當於右邊減去 A[P]，而左邊加上 A[P]，所以你能遍歷一次就找出所有差異值，<br>那麼只需要多一個變數來存最小差異值就好。</p><p>陷阱在於 [1000, -1000]，你如果沒處理好的話就會算出 0，但其實答案應該是 2000。</p><ul><li>時間複雜度 O(N)</li><li>空間複雜度 O(1)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/app/Codility/Lessons/TimeComplexity/TapeEquilibrium.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/tests/Unit/Codility/Lessons/TimeComplexity/TapeEquilibriumTest.php">單元測試</a></li></ul>]]></content>
+        <content type="html"><![CDATA[<h2 id="題目：">題目：</h2><p><a href="https://app.codility.com/programmers/lessons/3-time_complexity/perm_missing_elem/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給一個由 N 個不同整數組成的陣列 A。該陣列包含 [1~(N+1)] 範圍內的整數，這表示正好缺少一個 [1~(N+1)] 的元素，你必須找出他。<br>例如輸入 A=[2, 3, 1, 5] ，答案應為 4。</p><ul><li>N 是範圍 [1~100000] 的整數。</li><li>陣列 A 裡的元素都是不重複的。</li><li>陣列 A 裡的元素都是範圍 [1~(N+1)] 的整數</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>也許你一開始會想到排序後遍歷，但排序需要 O(Nlog N)，所以顯然應該有更好的解法。</p><p>再來也許會想到定義一個鍵為 1~(N+1) 的結果陣列，只要遍歷到就從結果陣列中刪除，那麼最後剩下的那個就是答案，這樣的時間複雜度似乎已達標，但是空間是否能用得更少呢?</p><p>觀察題目可以發現 1~(N+1) 其實就是等差為 1 的等差數列，那麼我們其實一開始就可以預期他們的總和是多少了，只要用預期總和去減 A 的所有元素就能求解。<br>這邊需要注意的是公式不要套錯，因為題目其實有少給你 1 個元素，所以正確的長度和高度應是 A 的元素數量再 +1。</p><p>像這樣用公式解就能降低空間複雜度到 O(1)。<br><s>雖然題目主旨是時間複雜度</s></p><ul><li>時間複雜度 O(N)</li><li>空間複雜度 O(1)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/app/Codility/Lessons/TimeComplexity/PermMissingElem.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/tests/Unit/Codility/Lessons/TimeComplexity/PermMissingElemTest.php">單元測試</a></li></ul>]]></content>
       
       
       <categories>
@@ -556,11 +556,11 @@
     
     
     <entry>
-      <title>Codility Lesson PermMissingElem</title>
-      <link href="/2023/04/14/Codility/CodilityLessonPermMissingElem/"/>
-      <url>/2023/04/14/Codility/CodilityLessonPermMissingElem/</url>
+      <title>Codility Lesson TapeEquilibrium</title>
+      <link href="/2023/04/14/Codility/CodilityLessonTapeEquilibrium/"/>
+      <url>/2023/04/14/Codility/CodilityLessonTapeEquilibrium/</url>
       
-        <content type="html"><![CDATA[<h2 id="題目：">題目：</h2><p><a href="https://app.codility.com/programmers/lessons/3-time_complexity/perm_missing_elem/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給一個由 N 個不同整數組成的陣列 A。該陣列包含 [1~(N+1)] 範圍內的整數，這表示正好缺少一個 [1~(N+1)] 的元素，你必須找出他。<br>例如輸入 A=[2, 3, 1, 5] ，答案應為 4。</p><ul><li>N 是範圍 [1~100000] 的整數。</li><li>陣列 A 裡的元素都是不重複的。</li><li>陣列 A 裡的元素都是範圍 [1~(N+1)] 的整數</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>也許你一開始會想到排序後遍歷，但排序需要 O(Nlog N)，所以顯然應該有更好的解法。</p><p>再來也許會想到定義一個鍵為 1~(N+1) 的結果陣列，只要遍歷到就從結果陣列中刪除，那麼最後剩下的那個就是答案，這樣的時間複雜度似乎已達標，但是空間是否能用得更少呢?</p><p>觀察題目可以發現 1~(N+1) 其實就是等差為 1 的等差數列，那麼我們其實一開始就可以預期他們的總和是多少了，只要用預期總和去減 A 的所有元素就能求解。<br>這邊需要注意的是公式不要套錯，因為題目其實有少給你 1 個元素，所以正確的長度和高度應是 A 的元素數量再 +1。</p><p>像這樣用公式解就能降低空間複雜度到 O(1)。<br><s>雖然題目主旨是時間複雜度</s></p><ul><li>時間複雜度 O(N)</li><li>空間複雜度 O(1)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/app/Codility/Lessons/TimeComplexity/PermMissingElem.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/tests/Unit/Codility/Lessons/TimeComplexity/PermMissingElemTest.php">單元測試</a></li></ul>]]></content>
+        <content type="html"><![CDATA[<h2 id="題目：">題目：</h2><p><a href="https://app.codility.com/programmers/lessons/3-time_complexity/tape_equilibrium/">官網題目連結</a></p><blockquote><p>根據題目敘述，會給一個由 N 個不同整數組成的<strong>非空</strong>陣列 A。遍歷到 A 的任一非 0 索引 P 時，會將陣列分成 A[1], A[2],…, A[P−1] 以及 A[P]、A[P+1],…, A[N−1] 兩個部分，其<strong>差異</strong>指的就是這兩部分<strong>各自加總</strong>後相減的絕對值。</p><p>例如輸入 A=[3, 1, 2, 4, 3] 時，可能的 P 值就會是 1~4，且他們的差異會是:</p><ol><li>P = 1，差異 = |3 − 10| = 7   (3 vs 1+2+4+3)</li><li>P = 2，差異 = |4 − 9| = 5    (3+1 vs 2+4+3)</li><li>P = 3，差異 = |6 − 7| = 1</li><li>P = 4，差異 = |10 − 3| = 7</li></ol><p>你的方法必須能吃這個陣列，並返回其中最小的差異，以上述例子來看就是 1</p><ul><li>N 是範圍 [2~100000] 的整數。</li><li>陣列 A 裡的元素都是範圍 [-1000~1000] 的整數</li></ul></blockquote><h2 id="解法：">解法：</h2><blockquote><p>這題敘述挺長的，有可能會一時不知道怎麼下手，但其實原則很簡單，就是一樣想辦法遍歷一次就做完。<br>我們會發現從 P 到 P+1 時，相當於右邊減去 A[P]，而左邊加上 A[P]，所以你能遍歷一次就找出所有差異值，<br>那麼只需要多一個變數來存最小差異值就好。</p><p>陷阱在於 [1000, -1000]，你如果沒處理好的話就會算出 0，但其實答案應該是 2000。</p><ul><li>時間複雜度 O(N)</li><li>空間複雜度 O(1)</li></ul></blockquote><h2 id="PHP-程式碼：">PHP 程式碼：</h2><ul><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/app/Codility/Lessons/TimeComplexity/TapeEquilibrium.php">我的解答</a></li><li><a href="https://github.com/Koufuchi/codilityPHP/blob/main/tests/Unit/Codility/Lessons/TimeComplexity/TapeEquilibriumTest.php">單元測試</a></li></ul>]]></content>
       
       
       <categories>
