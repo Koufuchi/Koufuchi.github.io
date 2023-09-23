@@ -25,3 +25,5 @@ function renderSpotify(args) {
 }
   
 hexo.extend.tag.register('spotify', renderSpotify);
+
+'<iframe src="${url}" width="${width}" height="${height}" frameborder="0" allowtransparency="allowtransparency" allow="encrypted-media"></iframe>';
