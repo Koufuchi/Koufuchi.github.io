@@ -57,9 +57,9 @@
             
             <tag> 系統架構 </tag>
             
-            <tag> MySQL </tag>
-            
             <tag> Consistency </tag>
+            
+            <tag> MySQL </tag>
             
         </tags>
       
@@ -88,9 +88,9 @@
             
             <tag> 系統架構 </tag>
             
-            <tag> MySQL </tag>
-            
             <tag> Consistency </tag>
+            
+            <tag> MySQL </tag>
             
         </tags>
       
@@ -117,13 +117,13 @@
             
             <tag> Cache </tag>
             
-            <tag> 系統架構 </tag>
-            
-            <tag> Consistency </tag>
-            
             <tag> 計算機組織 </tag>
             
+            <tag> 系統架構 </tag>
+            
             <tag> Message queue </tag>
+            
+            <tag> Consistency </tag>
             
         </tags>
       
