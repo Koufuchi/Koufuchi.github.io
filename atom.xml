@@ -79,9 +79,9 @@
     
     <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
-    
     <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
+    
+    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
     
   </entry>
   
@@ -113,9 +113,9 @@
     
     <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
-    
     <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
+    
+    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
     
   </entry>
   
@@ -143,13 +143,13 @@
     
     <category term="Cache" scheme="https://koufuchi.com/tags/Cache/"/>
     
-    <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
-    
-    <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
-    
     <category term="計算機組織" scheme="https://koufuchi.com/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/"/>
     
+    <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
+    
     <category term="Message queue" scheme="https://koufuchi.com/tags/Message-queue/"/>
+    
+    <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
     
   </entry>
   
@@ -178,11 +178,11 @@
     
     <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    
     <category term="Array" scheme="https://koufuchi.com/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.com/tags/HashTable/"/>
-    
-    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.com/tags/LeetCode/"/>
     
@@ -215,11 +215,11 @@
     
     <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    
     <category term="Array" scheme="https://koufuchi.com/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.com/tags/HashTable/"/>
-    
-    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.com/tags/LeetCode/"/>
     
@@ -252,11 +252,11 @@
     
     <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    
     <category term="Array" scheme="https://koufuchi.com/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.com/tags/HashTable/"/>
-    
-    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.com/tags/LeetCode/"/>
     
@@ -290,11 +290,11 @@
     
     <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
     
+    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
+    
     <category term="Array" scheme="https://koufuchi.com/tags/Array/"/>
     
     <category term="HashTable" scheme="https://koufuchi.com/tags/HashTable/"/>
-    
-    <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="LeetCode" scheme="https://koufuchi.com/tags/LeetCode/"/>
     
