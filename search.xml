@@ -140,9 +140,9 @@
             
             <tag> 系統架構 </tag>
             
-            <tag> Consistency </tag>
-            
             <tag> MySQL </tag>
+            
+            <tag> Consistency </tag>
             
         </tags>
       
@@ -171,9 +171,9 @@
             
             <tag> 系統架構 </tag>
             
-            <tag> Consistency </tag>
-            
             <tag> MySQL </tag>
+            
+            <tag> Consistency </tag>
             
         </tags>
       
@@ -200,13 +200,13 @@
             
             <tag> Cache </tag>
             
-            <tag> 計算機組織 </tag>
-            
             <tag> 系統架構 </tag>
             
-            <tag> Message queue </tag>
-            
             <tag> Consistency </tag>
+            
+            <tag> 計算機組織 </tag>
+            
+            <tag> Message queue </tag>
             
         </tags>
       
@@ -802,11 +802,11 @@
             
             <tag> PHP </tag>
             
-            <tag> Cache </tag>
-            
             <tag> Array </tag>
             
             <tag> HashTable </tag>
+            
+            <tag> Cache </tag>
             
         </tags>
       
