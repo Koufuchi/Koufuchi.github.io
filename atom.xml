@@ -6,7 +6,7 @@
   <link href="https://koufuchi.com/atom.xml" rel="self"/>
   
   <link href="https://koufuchi.com/"/>
-  <updated>2023-12-27T08:36:58.598Z</updated>
+  <updated>2023-12-29T06:55:20.169Z</updated>
   <id>https://koufuchi.com/</id>
   
   <author>
@@ -17,13 +17,45 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>用 Multipass 和 K3s 建立 K8s 集群</title>
+    <title>使用 Portainer 圖形化工具管理 K3s</title>
+    <link href="https://koufuchi.com/Kubernetes/PortainerK3s/"/>
+    <id>https://koufuchi.com/Kubernetes/PortainerK3s/</id>
+    <published>2023-12-28T13:57:29.000Z</published>
+    <updated>2023-12-29T06:55:20.169Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言：">前言：</h2><p>本文的目標為安裝 Portainer 圖形化工具來管理 K3s 環境，並簡單快速的用 yaml 設定來將容器自動部署到叢集上。</p><h2 id="還沒有建好叢集的讀者請先參考我的另一篇文章：">還沒有建好叢集的讀者請先參考我的另一篇文章：</h2><ul><li><a href="/Kubernetes/MultipassK3sK8s/">用 Multipass 和 K3s 建立 K8s 叢集</a></li></ul><h2 id="先到-server-虛擬機內安裝-portainer：">先到 server 虛擬機內安裝 portainer：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multipass shell k8s-server</span><br><span class="line"></span><br><span class="line">kubectl apply -n portainer -f https://downloads.portainer.io/ce2-19/portainer.yaml</span><br></pre></td></tr></table></figure><h2 id="安裝完後確認是否成功：">安裝完後確認是否成功：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo kubectl get pods -n portainer</span><br></pre></td></tr></table></figure><h2 id="回到本機，連到以下網址：">回到本機，連到以下網址：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">http://&lt;your_server_node_ip&gt;:30777/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或是</span></span><br><span class="line">https://&lt;your_server_node_ip&gt;:30779/</span><br></pre></td></tr></table></figure><h2 id="第一次啟動服務要設定帳號，如下圖：">第一次啟動服務要設定帳號，如下圖：</h2><p><img src="/images/portainerFirstLogin.png" alt=""></p><p>設定完成就可以看到以下介面：</p><p><img src="/images/quickSetup.png" alt=""></p><p>點選 Get Started 即可開始。</p><h2 id="點選-local-進入-Dashboard：">點選 local 進入 Dashboard：</h2><p><img src="/images/portainerHome.png" alt=""></p><p><img src="/images/portainerDashboard.png" alt=""></p><h2 id="點選-Services，然後選右上的-create-from-manifest：">點選 Services，然後選右上的 create from manifest：</h2><p><img src="/images/portainerService.png" alt=""></p><h2 id="選擇-Web-editor-並輸入設定的-yaml：">選擇 Web editor 並輸入設定的 yaml：</h2><p><img src="/images/portainerWebEditor.png" alt=""></p><p>這裡提供我用的 yaml 設定，用 nginx 官方 image 當簡單範例。</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">3</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx-container</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">        <span class="attr">resources:</span></span><br><span class="line">          <span class="attr">requests:</span></span><br><span class="line">            <span class="attr">memory:</span> <span class="string">&quot;128Mi&quot;</span></span><br><span class="line">            <span class="attr">cpu:</span> <span class="string">&quot;100m&quot;</span></span><br><span class="line">          <span class="attr">limits:</span></span><br><span class="line">            <span class="attr">memory:</span> <span class="string">&quot;256Mi&quot;</span></span><br><span class="line">            <span class="attr">cpu:</span> <span class="string">&quot;200m&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-service</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">LoadBalancer</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">38383</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure><p>若有部署成功但發生 external ip always pending 或無法連線的問題，要注意 port 的設定。</p><h2 id="成功部署會像這樣：">成功部署會像這樣：</h2><p><img src="/images/portainerSuccessDepoly.png" alt=""></p><h2 id="從圖中可以看到設定的-LoadBalancer-正常運作，有兩個-External-IP-可以通：">從圖中可以看到設定的 LoadBalancer 正常運作，有兩個 External IP 可以通：</h2><p><img src="/images/portainerServiceLoadBalancer.png" alt="Untitled"></p><h2 id="使用-External-IP-即可正常連線：">使用 External IP 即可正常連線：</h2><p>以筆者案例是 <a href="http://192.168.64.2:38383/">http://192.168.64.2:38383/</a> 和 <a href="http://192.168.64.3:38383/">http://192.168.64.3:38383/</a> 。</p><p><img src="/images/welcomeToNginx.png" alt=""></p><h2 id="額外補充：">額外補充：</h2><p>在原叢集正常運作時加開一個 worker2 虛擬機並加入叢集：</p><p>卡在這裡快二十分鐘都沒顯示完成：</p><p><img src="/images/addWorker2.png" alt="Untitled"></p><p>然後查看狀態發現服務掛了：</p><p><img src="/images/portainerLocalDown.png" alt="Untitled"></p><p>但依然可以正常訪問節點：</p><p><img src="/images/welcomeToNginx.png" alt=""></p><p>由於卡了二十分鐘都沒好，嘗試把 k8s-server 關掉，可以發現打其中一個 External IP 會變成「無法連上這個網站」了，但另一個正常，所以 LoadBalancer 的兩個端口確實是對應兩個不同節點上的服務，並且就算 master 掛掉 worker 還是能讀取。這也是因為 pod 是分散在兩個節點才能正常讀，不然 3 個 pod 都集中在 master 的話就算 worker 活著也讀不了。</p><p>最後把 k8s-server 重啟，一切正常，但中間還是等待了不少時間，可能開給他的資源真的太少了。</p><p>進入介面可以看到 LoadBalancer 自動的產生第三個端口，所以是隨著節點數量自動增減的：</p><p><img src="/images/portainerLoadBalancerAutoExpand.png" alt=""></p><p>嘗試把 k8s-worker2 關掉，大概要 2 分鐘才會顯示異常：</p><p><img src="/images/portainerClusterNodesError.png" alt=""></p><hr>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;前言：&quot;&gt;前言：&lt;/h2&gt;
+&lt;p&gt;本文的目標為安裝 Portainer 圖形化工具來管理 K3s 環境，並簡單快速的用 yaml 設定來將容器自動部署到叢集上。&lt;/p&gt;
+&lt;h2 id=&quot;還沒有建好叢集的讀者請先參考我的另一篇文章：&quot;&gt;還沒有建好叢集的讀者請先參考我</summary>
+      
+    
+    
+    
+    <category term="Kubernetes" scheme="https://koufuchi.com/categories/Kubernetes/"/>
+    
+    
+    <category term="Kubernetes" scheme="https://koufuchi.com/tags/Kubernetes/"/>
+    
+    <category term="K8s" scheme="https://koufuchi.com/tags/K8s/"/>
+    
+    <category term="K3s" scheme="https://koufuchi.com/tags/K3s/"/>
+    
+    <category term="Portainer" scheme="https://koufuchi.com/tags/Portainer/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>用 Multipass 和 K3s 建立 K8s 叢集</title>
     <link href="https://koufuchi.com/Kubernetes/MultipassK3sK8s/"/>
     <id>https://koufuchi.com/Kubernetes/MultipassK3sK8s/</id>
     <published>2023-12-26T12:31:11.000Z</published>
-    <updated>2023-12-27T08:36:58.598Z</updated>
+    <updated>2023-12-29T06:49:44.634Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="前言：">前言：</h2><p>本文的目標為在 macOS 上開兩個 ubuntu 虛擬機並將他們納入 Kubernetes 環境，且可從 macOS 本機連接。</p><ul><li>Multipass : 在 macOS 快速建立 ubuntu 虛擬機。</li><li>K3s : 輕量化的 K8s(Kubernetes)。</li></ul><h2 id="安裝-kubectl：">安裝 kubectl：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install kubectl</span><br></pre></td></tr></table></figure><h2 id="安裝-Multipass：">安裝 Multipass：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install multipass --cask</span><br></pre></td></tr></table></figure><h2 id="創建兩台虛擬機：">創建兩台虛擬機：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multipass launch --name k8s-server --mem 1G --disk 5G --cpus 1</span><br><span class="line"></span><br><span class="line">multipass launch --name k8s-worker --mem 1G --disk 5G --cpus 1</span><br></pre></td></tr></table></figure><h2 id="檢查虛擬機狀態順便記下-IP-後面會用到：">檢查虛擬機狀態順便記下 IP 後面會用到：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">multipass list</span><br></pre></td></tr></table></figure><h2 id="在-server-虛擬機上安裝-k3s：">在 server 虛擬機上安裝 k3s：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multipass shell k8s-server</span><br><span class="line"></span><br><span class="line">curl -sfL https://get.k3s.io | sh -</span><br></pre></td></tr></table></figure><h2 id="複製-server-虛擬機上的設定：">複製 server 虛擬機上的設定：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/rancher/k3s/k3s.yaml</span><br></pre></td></tr></table></figure><h2 id="回到本機，將剛剛複製完的設定貼進本機設定檔：">回到本機，將剛剛複製完的設定貼進本機設定檔：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.kube/config</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或是</span></span><br><span class="line">vim /Users/&lt;userName&gt;/.kube/config</span><br></pre></td></tr></table></figure><h2 id="貼上之後記得將本機設定檔裡的-cluster-的-server-位置改成-server-虛擬機-IP：">貼上之後記得將本機設定檔裡的 cluster 的 server 位置改成 server 虛擬機 IP：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意要 s 和指定 6443 port</span></span><br><span class="line">server: https://&lt;your_server_node_ip&gt;:6443</span><br></pre></td></tr></table></figure><h2 id="本機輸指令確認是否成功：">本機輸指令確認是否成功：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get nodes</span><br><span class="line"></span><br><span class="line">kubectl cluster-info</span><br></pre></td></tr></table></figure><h2 id="印出-server-虛擬機的-node-token，待會用到：">印出 server 虛擬機的 node-token，待會用到：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">multipass <span class="built_in">exec</span> k8s-server sudo <span class="built_in">cat</span> /var/lib/rancher/k3s/server/node-token</span><br></pre></td></tr></table></figure><h2 id="在-worker-虛擬機上安裝-K3s-並加入集群：">在 worker 虛擬機上安裝 K3s 並加入集群：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multipass shell k8s-worker</span><br><span class="line"></span><br><span class="line">curl -sfL https://get.k3s.io | K3S_URL=https://&lt;your_server_node_ip&gt;:6443 K3S_TOKEN=<span class="string">&quot;&lt;your_server_node_token&gt;&quot;</span> sh -</span><br></pre></td></tr></table></figure><h2 id="回到本機輸指令確認是否成功：">回到本機輸指令確認是否成功：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get nodes -owide</span><br></pre></td></tr></table></figure><h2 id="參考：">參考：</h2><ul><li><a href="https://geekhour.net/2023/12/23/kubernetes/">Kubernetes一小時入門課程</a></li></ul><hr>]]></content>
+    <content type="html"><![CDATA[<h2 id="前言：">前言：</h2><p>本文的目標為在 macOS 上開兩個 ubuntu 虛擬機並將他們納入 Kubernetes 環境，且可從 macOS 本機連接。</p><ul><li>Multipass : 在 macOS 快速建立 ubuntu 虛擬機。</li><li>K3s : 輕量化的 K8s(Kubernetes)。</li></ul><h2 id="安裝-kubectl：">安裝 kubectl：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install kubectl</span><br></pre></td></tr></table></figure><h2 id="安裝-Multipass：">安裝 Multipass：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install multipass --cask</span><br></pre></td></tr></table></figure><h2 id="創建兩台虛擬機：">創建兩台虛擬機：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multipass launch --name k8s-server --mem 1G --disk 5G --cpus 1</span><br><span class="line"></span><br><span class="line">multipass launch --name k8s-worker --mem 1G --disk 5G --cpus 1</span><br></pre></td></tr></table></figure><h2 id="檢查虛擬機狀態順便記下-IP-後面會用到：">檢查虛擬機狀態順便記下 IP 後面會用到：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">multipass list</span><br></pre></td></tr></table></figure><h2 id="在-server-虛擬機上安裝-k3s：">在 server 虛擬機上安裝 k3s：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multipass shell k8s-server</span><br><span class="line"></span><br><span class="line">curl -sfL https://get.k3s.io | sh -</span><br></pre></td></tr></table></figure><h2 id="複製-server-虛擬機上的設定：">複製 server 虛擬機上的設定：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/rancher/k3s/k3s.yaml</span><br></pre></td></tr></table></figure><h2 id="回到本機，將剛剛複製完的設定貼進本機設定檔：">回到本機，將剛剛複製完的設定貼進本機設定檔：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.kube/config</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或是</span></span><br><span class="line">vim /Users/&lt;userName&gt;/.kube/config</span><br></pre></td></tr></table></figure><h2 id="貼上之後記得將本機設定檔裡的-cluster-的-server-位置改成-server-虛擬機-IP：">貼上之後記得將本機設定檔裡的 cluster 的 server 位置改成 server 虛擬機 IP：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意要 s 和指定 6443 port</span></span><br><span class="line">server: https://&lt;your_server_node_ip&gt;:6443</span><br></pre></td></tr></table></figure><h2 id="本機輸指令確認是否成功：">本機輸指令確認是否成功：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get nodes</span><br><span class="line"></span><br><span class="line">kubectl cluster-info</span><br></pre></td></tr></table></figure><h2 id="印出-server-虛擬機的-node-token，待會用到：">印出 server 虛擬機的 node-token，待會用到：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">multipass <span class="built_in">exec</span> k8s-server sudo <span class="built_in">cat</span> /var/lib/rancher/k3s/server/node-token</span><br></pre></td></tr></table></figure><h2 id="在-worker-虛擬機上安裝-K3s-並加入叢集：">在 worker 虛擬機上安裝 K3s 並加入叢集：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multipass shell k8s-worker</span><br><span class="line"></span><br><span class="line">curl -sfL https://get.k3s.io | K3S_URL=https://&lt;your_server_node_ip&gt;:6443 K3S_TOKEN=<span class="string">&quot;&lt;your_server_node_token&gt;&quot;</span> sh -</span><br></pre></td></tr></table></figure><h2 id="回到本機輸指令確認是否成功：">回到本機輸指令確認是否成功：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get nodes -owide</span><br></pre></td></tr></table></figure><h2 id="不想打那麼多指令嗎？">不想打那麼多指令嗎？</h2><p>參考我的另一篇文章：<a href="/Kubernetes/PortainerK3s">使用 Portainer 圖形化工具管理 K3s 叢集</a></p><h2 id="參考：">參考：</h2><ul><li><a href="https://geekhour.net/2023/12/23/kubernetes/">Kubernetes一小時入門課程</a></li></ul><hr>]]></content>
     
     
       
@@ -44,6 +76,8 @@
     <category term="K8s" scheme="https://koufuchi.com/tags/K8s/"/>
     
     <category term="Multipass" scheme="https://koufuchi.com/tags/Multipass/"/>
+    
+    <category term="K3s" scheme="https://koufuchi.com/tags/K3s/"/>
     
   </entry>
   
@@ -165,9 +199,9 @@
     
     <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
-    
     <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
+    
+    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
     
   </entry>
   
@@ -199,9 +233,9 @@
     
     <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
     
-    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
-    
     <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
+    
+    <category term="MySQL" scheme="https://koufuchi.com/tags/MySQL/"/>
     
   </entry>
   
@@ -229,13 +263,13 @@
     
     <category term="Cache" scheme="https://koufuchi.com/tags/Cache/"/>
     
-    <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
-    
-    <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
-    
     <category term="計算機組織" scheme="https://koufuchi.com/tags/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%84%E7%B9%94/"/>
     
+    <category term="系統架構" scheme="https://koufuchi.com/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/"/>
+    
     <category term="Message queue" scheme="https://koufuchi.com/tags/Message-queue/"/>
+    
+    <category term="Consistency" scheme="https://koufuchi.com/tags/Consistency/"/>
     
   </entry>
   
@@ -624,41 +658,6 @@
     <category term="演算法" scheme="https://koufuchi.com/tags/%E6%BC%94%E7%AE%97%E6%B3%95/"/>
     
     <category term="Codility" scheme="https://koufuchi.com/tags/Codility/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>用 Homebrew 懶人切換 php 版本</title>
-    <link href="https://koufuchi.com/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/"/>
-    <id>https://koufuchi.com/%E7%94%A8brew%E6%87%B6%E4%BA%BA%E5%88%87%E6%8F%9Bphp%E7%89%88%E6%9C%AC/</id>
-    <published>2023-04-19T14:42:07.000Z</published>
-    <updated>2023-11-21T09:52:52.224Z</updated>
-    
-    <content type="html"><![CDATA[<aside>💡 適用於 mac os 且使用 Homebrew 管理 php 環境</aside><hr><h2 id="核心為以下兩行">核心為以下兩行 :</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew <span class="built_in">unlink</span> php@7.3 </span><br><span class="line">brew <span class="built_in">link</span> -f php@8.1</span><br></pre></td></tr></table></figure><h2 id="每次都要記很煩所以寫了個簡單-script">每次都要記很煩所以寫了個簡單 script :</h2><p><a href="https://github.com/Koufuchi/php_version_switcher">GitHub - Koufuchi/php_version_switcher</a></p><h2 id="用命令行移動到-script-所在目錄，執行以下語法並指定版本即可切換：">用命令行移動到 script 所在目錄，執行以下語法並指定版本即可切換：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">. ~/ps.sh 7.3  <span class="comment"># 檔名自己取，執行時後面餵版本參數，如果參數錯誤則會列出你本機安裝的所有版本</span></span><br></pre></td></tr></table></figure><h2 id="或是真的超懶，就在-zshrc-中加入">或是真的超懶，就在 ~/.zshrc 中加入 :</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;<span class="variable">$PATH</span>:/&lt;your script path&gt;/&quot;</span>  <span class="comment"># script 所在目錄</span></span><br></pre></td></tr></table></figure><h2 id="之後打開-terminal-後就直接輸入以下就好">之後打開 terminal 後就直接輸入以下就好 :</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps.sh 7.3 </span><br></pre></td></tr></table></figure><p>注意所有指令都會跑去你指定的目錄對，所以其實不太推薦這樣玩</p><hr>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;aside&gt;
-💡 適用於 mac os 且使用 Homebrew 管理 php 環境
-&lt;/aside&gt;
-&lt;hr&gt;
-&lt;h2 id=&quot;核心為以下兩行&quot;&gt;核心為以下兩行 :&lt;/h2&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td cla</summary>
-      
-    
-    
-    
-    <category term="自製工具" scheme="https://koufuchi.com/categories/%E8%87%AA%E8%A3%BD%E5%B7%A5%E5%85%B7/"/>
-    
-    
-    <category term="PHP" scheme="https://koufuchi.com/tags/PHP/"/>
-    
-    <category term="Shell" scheme="https://koufuchi.com/tags/Shell/"/>
-    
-    <category term="Homebrew" scheme="https://koufuchi.com/tags/Homebrew/"/>
-    
-    <category term="macOS" scheme="https://koufuchi.com/tags/macOS/"/>
     
   </entry>
   
