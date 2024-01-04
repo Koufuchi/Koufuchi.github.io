@@ -4,11 +4,11 @@
   
     
     <entry>
-      <title>使用 Prometheus 和 Grafana 來監控你的 K3s / K8s 系統</title>
+      <title>使用 Prometheus 和 Grafana 來監控你的 K3s / K8s 叢集</title>
       <link href="/Kubernetes/PrometheusGrafanaK3s/"/>
       <url>/Kubernetes/PrometheusGrafanaK3s/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言：">前言：</h2><p>本文的目標為安裝 Prometheus 和 Grafana 來監控 K3s / K8s 環境，可以從非常細度的指標組合出想看的資訊，並用精美的圖表呈現，也能在達成條件時發送警告，是系統維運的好用工具。</p><h2 id="還沒有建好叢集的讀者請先參考我的另一篇文章：">還沒有建好叢集的讀者請先參考我的另一篇文章：</h2><ul><li><a href="/Kubernetes/MultipassK3sK8s/">用 Multipass 和 K3s 建立 K8s 叢集</a></li></ul><h2 id="本文有用圖形化工具-portainer-和指令兩種方式教學，想安裝-portainer-的話請先參考我的另一篇文章：">本文有用圖形化工具 portainer 和指令兩種方式教學，想安裝 portainer 的話請先參考我的另一篇文章：</h2><ul><li><a href="/Kubernetes/PortainerK3s/">使用 Portainer 圖形化工具管理 K3s / K8s</a></li></ul><h2 id="先用-helm-安裝-kube-prometheus-stack-內含-grafana-：">先用 helm 安裝 kube-prometheus-stack (內含 grafana)：</h2><p><a href="https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack">可參考官方說明</a></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm install my-kube-prometheus-stack prometheus-community/kube-prometheus-stack --version 55.5.1</span><br></pre></td></tr></table></figure><p><img src="/images/helmInstallKubePrometheus.png" alt=""></p><p>雖然 terminal 很快就顯示跑完了，但可以觀察虛擬機還是在大量跑東西。</p><p>順帶一提筆者一開始使用 1G 或 2G RAM 的主節點都會無限失敗，後來換成 4G RAM 才成功，Grafana 需要吃的資源真的很多。</p><h2 id="裝完後查看-services：">裝完後查看 services：</h2><ul><li>用 portainer 看：</li></ul><p><img src="/images/portainerShowK8sServices.png" alt=""></p><ul><li>也可以用指令看：</li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get services</span><br></pre></td></tr></table></figure><p><img src="/images/codeShowK8sServices.png" alt=""></p><h2 id="把本機的-port-映射到叢集-pod-的-port-以便在本機瀏覽器觀看：">把本機的 port 映射到叢集 pod 的 port 以便在本機瀏覽器觀看：</h2><p>實際 services 名稱和 namespace 等等請參考你剛剛查看 services 的結果。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># grafana </span></span><br><span class="line">kubectl port-forward svc/my-kube-prometheus-stack-grafana 3000:80 -n default</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果想看 prometheus 可以順便開這個</span></span><br><span class="line">kubectl port-forward svc/my-kube-prometheus-stack-prometheus 9090:9090 -n default</span><br><span class="line"><span class="comment"># 如果想看 prometheus alert manager 可以順便開這個</span></span><br><span class="line">kubectl port-forward svc/my-kube-prometheus-stack-alertmanager 9093:9093 -n default</span><br></pre></td></tr></table></figure><p><img src="/images/kubectlPortFowardResult.png" alt=""></p><h2 id="對上本機-port-後就可以在瀏覽器打開-localhost-port-了：">對上本機 port 後就可以在瀏覽器打開 <code>localhost:&lt;port&gt;</code> 了：</h2><p><img src="/images/welcomeToGrafana.png" alt=""></p><h2 id="回到叢集找-grafana-的帳密：">回到叢集找 grafana 的帳密：</h2><p>用 portainer 看：</p><p><img src="/images/portainerShowGrafanaUserPW.png" alt=""></p><p>也可以用指令看：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get secrets</span><br></pre></td></tr></table></figure><p><img src="/images/codeShowK8sSecrets.png" alt=""></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get secret my-kube-prometheus-stack-grafana -o jsonpath=<span class="string">&quot;&#123;.data.admin-user&#125;&quot;</span> | <span class="built_in">base64</span> --decode</span><br><span class="line">kubectl get secret my-kube-prometheus-stack-grafana -o jsonpath=<span class="string">&quot;&#123;.data.admin-password&#125;&quot;</span> | <span class="built_in">base64</span> --decode</span><br></pre></td></tr></table></figure><p><img src="/images/codeShowK8sSecretsValue.png" alt=""></p><h2 id="輸入帳密後成功登入：">輸入帳密後成功登入：</h2><p><img src="/images/grafanaAfterLogin.png" alt=""></p><h2 id="選擇-Create-your-first-dashboard：">選擇 Create your first dashboard：</h2><p><img src="/images/grafanaCreateYourFirstDashboard.png" alt=""></p><h2 id="選擇-Add-visualization：">選擇 Add visualization：</h2><p>可以看到已經預設與 Prometheus 連接好了。</p><p><img src="/images/grafanaAddVisualization.png" alt=""></p><p>接下來就可以使用指標和語法來建立自己想看的 DashBoard。</p><h2 id="當然也可以直接看一些預設好的模板，點擊-DashBoard：">當然也可以直接看一些預設好的模板，點擊 DashBoard：</h2><p><img src="/images/grafanaDashboards.png" alt=""></p><p>點擊想要的就可以看到數據囉：</p><p><img src="/images/grafanaDashboardsCoreDNS.png" alt=""></p><hr>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言：">前言：</h2><p>本文的目標為安裝 Prometheus 和 Grafana 來監控 K3s / K8s 叢集，可以從非常細度的指標組合出想看的資訊，並用精美的圖表呈現，也能在達成條件時發送警告，是系統維運的好用工具。</p><h2 id="還沒有建好叢集的讀者請先參考我的另一篇文章：">還沒有建好叢集的讀者請先參考我的另一篇文章：</h2><ul><li><a href="/Kubernetes/MultipassK3sK8s/">用 Multipass 和 K3s 建立 K8s 叢集</a></li></ul><h2 id="本文有用圖形化工具-portainer-和指令兩種方式教學，想安裝-portainer-的話請先參考我的另一篇文章：">本文有用圖形化工具 portainer 和指令兩種方式教學，想安裝 portainer 的話請先參考我的另一篇文章：</h2><ul><li><a href="/Kubernetes/PortainerK3s/">使用 Portainer 圖形化工具管理 K3s / K8s 叢集</a></li></ul><h2 id="先用-helm-安裝-kube-prometheus-stack-內含-grafana-：">先用 helm 安裝 kube-prometheus-stack (內含 grafana)：</h2><p><a href="https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack">可參考官方說明</a></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm install my-kube-prometheus-stack prometheus-community/kube-prometheus-stack --version 55.5.1</span><br></pre></td></tr></table></figure><p><img src="/images/helmInstallKubePrometheus.png" alt=""></p><p>雖然 terminal 很快就顯示跑完了，但可以觀察虛擬機還是在大量跑東西。</p><p>順帶一提筆者一開始使用 1G 或 2G RAM 的主節點都會無限失敗，後來換成 4G RAM 才成功，Grafana 需要吃的資源真的很多。</p><h2 id="裝完後查看-services：">裝完後查看 services：</h2><ul><li>用 portainer 看：</li></ul><p><img src="/images/portainerShowK8sServices.png" alt=""></p><ul><li>也可以用指令看：</li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get services</span><br></pre></td></tr></table></figure><p><img src="/images/codeShowK8sServices.png" alt=""></p><h2 id="把本機的-port-映射到叢集-pod-的-port-以便在本機瀏覽器觀看：">把本機的 port 映射到叢集 pod 的 port 以便在本機瀏覽器觀看：</h2><p>實際 services 名稱和 namespace 等等請參考你剛剛查看 services 的結果。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># grafana </span></span><br><span class="line">kubectl port-forward svc/my-kube-prometheus-stack-grafana 3000:80 -n default</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果想看 prometheus 可以順便開這個</span></span><br><span class="line">kubectl port-forward svc/my-kube-prometheus-stack-prometheus 9090:9090 -n default</span><br><span class="line"><span class="comment"># 如果想看 prometheus alert manager 可以順便開這個</span></span><br><span class="line">kubectl port-forward svc/my-kube-prometheus-stack-alertmanager 9093:9093 -n default</span><br></pre></td></tr></table></figure><p><img src="/images/kubectlPortFowardResult.png" alt=""></p><h2 id="對上本機-port-後就可以在瀏覽器打開-localhost-port-了：">對上本機 port 後就可以在瀏覽器打開 <code>localhost:&lt;port&gt;</code> 了：</h2><p><img src="/images/welcomeToGrafana.png" alt=""></p><h2 id="回到叢集找-grafana-的帳密：">回到叢集找 grafana 的帳密：</h2><p>用 portainer 看：</p><p><img src="/images/portainerShowGrafanaUserPW.png" alt=""></p><p>也可以用指令看：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get secrets</span><br></pre></td></tr></table></figure><p><img src="/images/codeShowK8sSecrets.png" alt=""></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get secret my-kube-prometheus-stack-grafana -o jsonpath=<span class="string">&quot;&#123;.data.admin-user&#125;&quot;</span> | <span class="built_in">base64</span> --decode</span><br><span class="line">kubectl get secret my-kube-prometheus-stack-grafana -o jsonpath=<span class="string">&quot;&#123;.data.admin-password&#125;&quot;</span> | <span class="built_in">base64</span> --decode</span><br></pre></td></tr></table></figure><p><img src="/images/codeShowK8sSecretsValue.png" alt=""></p><h2 id="輸入帳密後成功登入：">輸入帳密後成功登入：</h2><p><img src="/images/grafanaAfterLogin.png" alt=""></p><h2 id="選擇-Create-your-first-dashboard：">選擇 Create your first dashboard：</h2><p><img src="/images/grafanaCreateYourFirstDashboard.png" alt=""></p><h2 id="選擇-Add-visualization：">選擇 Add visualization：</h2><p>可以看到已經預設與 Prometheus 連接好了。</p><p><img src="/images/grafanaAddVisualization.png" alt=""></p><p>接下來就可以使用指標和語法來建立自己想看的 DashBoard。</p><h2 id="當然也可以直接看一些預設好的模板，點擊-DashBoard：">當然也可以直接看一些預設好的模板，點擊 DashBoard：</h2><p><img src="/images/grafanaDashboards.png" alt=""></p><p>點擊想要的就可以看到數據囉：</p><p><img src="/images/grafanaDashboardsCoreDNS.png" alt=""></p><hr>]]></content>
       
       
       <categories>
@@ -37,7 +37,7 @@
     
     
     <entry>
-      <title>使用 Portainer 圖形化工具管理 K3s / K8s</title>
+      <title>使用 Portainer 圖形化工具管理 K3s / K8s 叢集</title>
       <link href="/Kubernetes/PortainerK3s/"/>
       <url>/Kubernetes/PortainerK3s/</url>
       
@@ -88,9 +88,9 @@
             
             <tag> K8s </tag>
             
-            <tag> Multipass </tag>
-            
             <tag> K3s </tag>
+            
+            <tag> Multipass </tag>
             
         </tags>
       
@@ -206,9 +206,9 @@
             
             <tag> 系統架構 </tag>
             
-            <tag> Consistency </tag>
-            
             <tag> MySQL </tag>
+            
+            <tag> Consistency </tag>
             
         </tags>
       
@@ -237,9 +237,9 @@
             
             <tag> 系統架構 </tag>
             
-            <tag> Consistency </tag>
-            
             <tag> MySQL </tag>
+            
+            <tag> Consistency </tag>
             
         </tags>
       
@@ -266,13 +266,13 @@
             
             <tag> Cache </tag>
             
-            <tag> 計算機組織 </tag>
-            
             <tag> 系統架構 </tag>
             
-            <tag> Message queue </tag>
-            
             <tag> Consistency </tag>
+            
+            <tag> 計算機組織 </tag>
+            
+            <tag> Message queue </tag>
             
         </tags>
       
@@ -866,13 +866,13 @@
       
         <tags>
             
-            <tag> Cache </tag>
-            
             <tag> PHP </tag>
             
             <tag> Array </tag>
             
             <tag> HashTable </tag>
+            
+            <tag> Cache </tag>
             
         </tags>
       
